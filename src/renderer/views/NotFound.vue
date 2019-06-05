@@ -1,7 +1,7 @@
 <template>
     <div>
         <router-link to="/">back</router-link>
-        Not found
+        Error 404: Not found :(
     </div>
 </template>
 

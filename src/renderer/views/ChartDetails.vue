@@ -10,11 +10,14 @@
       chartid {{charts.id}}
       <ChartContainer :type="$route.params.type" :data="charts[0].data" :id="charts[0].id" :options="charts[0].options"/>
       <div>
-        <select name="type" v-model="type">
+        <!-- 
+          wybor typu chartu
+          <select name="type" v-model="type">
           <option disabled value="">Select Type</option>
           <option value="line">line</option>
           <option value="bar">bar</option>
-        </select> 
+        </select>  -->
+        <!-- trzeba tu te guziczki jakos podczepic pod data() i móc updateować chart w bazie za pomoca  cs.updateChart(id, newChartData) -->
         Label: <input type="text" v-model="charts[0].data.datasets[0].label">
         Url of database: <input type="url" v-model="db">
         <input type="checkbox" name="options" id="" v-model="charts[0].options.responsive"> responsive
@@ -26,6 +29,8 @@
         borderColor :
         <input type="color" name="border" id="" v-model="charts[0].data.datasets[0].borderColor[selectedData.index]">  
         <input type="button" value="" @click="reset"> 
+
+        <!-- koniec guziczkow -->
     </div>
 
       </div>

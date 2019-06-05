@@ -11,15 +11,15 @@ export default {
   },
   computed: {
     ...mapState([
-      //mapowanie stanow
-    ]),
+      // mapowanie stanow
+    ])
   },
   mounted () {
-    
+
   },
   methods: {
     ...mapActions([
-      //rozne akcje
+      // rozne akcje
     ])
   }
 }

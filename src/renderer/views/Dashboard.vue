@@ -1,32 +1,49 @@
 <template>
-<div>
-  <router-link to="/add">add new chart</router-link>
+<div class="container">
+  <div class="columns">
+      
+    <div v-if="isLoading" class="column">loading ....</div>
+    
+    <div v-if="isLoaded" class="columns column">
+      <div class="column col-12">
+
+        <!-- jest takie cos jak vuedevtools w tym okienku co ci sie wyswietla, 
+        odpalasz zwykle devtoolsy jesli sie same nie wlaczyly (ctrl + shift + i) 
+        masz takie zakladki jak elements, console itd i znalezc trzeba "vue" , 
+        tam sie wszystko pokazuje jak wygladaja dane aktualnie -->
+
+        <!-- zeby zobaczyc baze danych aplikacji to tez devtoolsy 
+        ale zakladka application -> indexeddb ->nazwa  -->
+        <!--
+          TU JEST TROCHE PRZYKLADOW JAK WYWOLYWAC FUNKCJE ITD, ODKOMENTUJ I ZOBACZ JAK DZIALA
+           <router-link to="/add">add new chart</router-link> -->
   <br>
-  <router-link to="/chart/1">chartDetails </router-link>
-  <router-link to="/chart/3">chartDetails </router-link>
-  <router-link to="/chart/4">chartDetails </router-link>
-  <router-link to="/chart/18">chartDetails </router-link>
+  <!-- <router-link to="/chart/1/line">chartDetails 1 </router-link>
+  <router-link to="/chart/3/bar">chartDetails 3</router-link>
+  <router-link to="/chart/4/line">chartDetails 4</router-link>
+  <router-link to="/chart/18/bar">chartDetails 18</router-link> -->
 
     
-    <button @click="readChart(3)">readChart(3)</button> <br>
-    <button @click="updateChart()">updateChart()</button>  <br>
-readed: didnt work {{JSON.stringify(read)}} <br/>
- <button @click="getAllCharts()">getAllCharts()</button><br>
- <button @click="addChart()">addChart()</button><br>
- <button @click="destroyDb()">destroyDb()</button><br>
- <button @click="readChart(1)">readChart(1)</button><br>
- <button @click="deleteChart(2)">deleteChart(2)</button><br>
- <!-- <button @click="checkStorage">check</button> --> -->
-    <div v-if="isLoading">loading ....</div>
-    <div v-if="isLoaded">
-    <div  v-for="(chartx, i) in charts" :key="i"> 
+    <!-- <button @click="readChart(3)" class="btn btn-primary">readChart(3)</button> <br>
+    <button @click="updateChart()" class="btn btn-primary">updateChart()</button>  <br>
+readed: {{JSON.stringify(read)}} <br/>
+ <button @click="getAllCharts()" class="btn btn-primary">getAllCharts()</button><br>
+ -->
+  <button @click="addChart()" class="btn btn-primary">wygeneruj nowy wykres addChart() [doda sie na dole]</button><br> 
+ <!-- <button @click="destroyDb()" class="btn btn-primary">destroyDb()</button><br>
+ <button @click="readChart(1)" class="btn btn-primary">readChart(1)</button><br>
+ <button @click="deleteChart(2)" class="btn btn-primary">deleteChart(2)</button><br>  -->
+      </div>
+    <div  v-for="(chartx, i) in charts" :key="i" class="column col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-6"> 
       <!-- <button @click="deleteChart(i)">delete chart {{i}}</button> -->
       <ChartContainer :type="types[i%2]" :data="chartx.data" :id="chartx.id" :options="chartx.options"/>
-      <router-link :to="`/chart/${chartx.id}/${types[i%2]}`"> <button>Go to chart no. {{chartx.id}} </button> </router-link>
+      <router-link :to="`/chart/${chartx.id}/${types[i%2]}`"> <button class="btn btn-primary">Go to chart no. {{chartx.id}} </button> </router-link>
     </div>
     </div>
 
-    hello
+  </div>
+  
+
 
 </div>
 </template>

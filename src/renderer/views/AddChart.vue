@@ -1,20 +1,41 @@
 <template>
-    <div>
-          <router-link to="/">back </router-link>
-     <div>
-        <select name="type" v-model="type">
-          <option disabled value="">Select Type</option>
-          <option value="line">line</option>
-          <option value="bar">bar</option>
-        </select> 
+
+
+<div class="container">
+  <!-- To taki generator nowych wykresow, nieskonczony na razie. 
+  1. wybierasz typ jaki chcesz (line,bar)
+  2. wybierasz baze z dostepnych (na razie nie ma ich)
+  3. wybierasz keys po ktorym chcesz pobrac dane i wybierasz co chcesz zrobic z tym np suma, srednia
+  4. po wygenerowaniu przekierowuje cie do /chart/:id/:type
+   -->
+  <div v-if="steps.type" class="columns">
+    <router-link to="/">back </router-link>
+    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12"><h2>Choose type of chart</h2></div>
+    <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6" @click="type='bar'"><img src="static/bar.png" class="img-responsive" alt=""></div>
+    <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6" @click="type='line'"><img src="static/line.png" class="img-responsive" alt=""></div>
+  
+    <button @click="steps.type = false; steps.database = true"> next </button>
+  </div>
+  <div v-else-if="steps.database" class="columns">
+   database
+  
+<button @click="steps.database = false; steps.keys = true">next </button>
+  </div>
+  <div v-else-if="steps.keys" class="columns">
+    keys
+  
+      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12"><h2>Choose database</h2></div>
+<button @click="steps.keys = false; steps.finish = true">next </button>
+  </div>
+  <div v-else>success!!!!!!!</div>
         <!-- Label: <input type="text" v-model="charts[0].data.datasets.label"> -->
         <!-- <input type="checkbox" name="options" id="" v-model="charts.options.responsive"> responsive
         <input type="checkbox" name="options" id="" v-model="charts.options.maintainAspectRatio"> maintainAspectRatio
         <input type="checkbox" name="options" id="" v-model="charts.options.scales.yAxes[0].ticks"> Begin at zero
         <input type="checkbox" name="options" id="" v-model="charts.options.scales.yAxes[0].legend"> Display Legend   -->
-        <button @click="generate">Generate</button>
-    </div>
-    </div>
+    <button @click="generate">Generate</button>
+</div>
+
 </template>
 <script>
 import cs from '@/api/CrudService'
@@ -25,6 +46,13 @@ export default {
     return {
       type: '',
       id: '',
+      steps: {
+        type: true,
+        database: false,
+        keys: false,
+        finish: true
+      },
+      loading: false,
       charts: {
         data: {
           labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
