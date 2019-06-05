@@ -5,20 +5,30 @@
 #### Build Setup
 
 ``` bash
+
+# clone my repo
+git clone https://github.com/evilghostgirl/data-app.git
+
+# go to directory
+cd data-app/
+
 # install dependencies
 npm install
 
 # serve with hot reload at localhost:9080
 npm run dev
 
-# build electron application for production
+
+^^^^^^^
+# dotąd trzeba zrobic, reszta niewazna
+# build electron application for production (tego nie trzeba robic, chyba ze z ciekawosci chcesz zobaczyc)
 npm run build
 
-# run unit & end-to-end tests
+# run unit & end-to-end tests (testy)
 npm test
 
 
-# lint all JS/Vue component files in `src/`
+# lint all JS/Vue component files in `src/` //nie
 npm run lint
 
 ```
