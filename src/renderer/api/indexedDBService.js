@@ -5,15 +5,7 @@ const checkStorage = async storeName => {
     throw new Error('Browser does not support IndexedDB')
   }
   console.log('szmul')
-  const odb = await openDb('charts', 1, {
-    upgrade (db) {
-      const store = db.createObjectStore('charts', {
-        keyPath: 'id',
-        autoIncrement: true
-      })
-      store.createIndex('chart', 'chart')
-    }
-  })
+  const odb = await openDb('charts', 1)
   console.log('szmul 2')
 
   return odb.then(db => {

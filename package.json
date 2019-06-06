@@ -59,6 +59,7 @@
     "axios": "^0.18.0",
     "chart.js": "^2.8.0",
     "data-forge": "^1.7.2",
+    "idb": "^4.0.3",
     "normalize.css": "^8.0.1",
     "spectre.css": "^0.5.8",
     "vue": "^2.5.16",

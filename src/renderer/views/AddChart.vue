@@ -19,20 +19,26 @@
     <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6" @click="type='line'"><img src="static/line.png" class="img-responsive" alt=""></div>
   
     <button @click="getLastId"> get </button>
+
     <button @click="steps.type = false; steps.database = true"> next </button>
   </div>
   <div v-else-if="steps.database" class="columns">
    database
-  
+      <button @click="steps.type = true; steps.database = false"> back </button>
+
 <button @click="steps.database = false; steps.keys = true">next </button>
   </div>
   <div v-else-if="steps.keys" class="columns">
     keys
   
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12"><h2>Choose database</h2></div>
+            <button @click="steps.database = true; steps.keys = false"> back </button>
+
 <button @click="steps.keys = false; steps.finish = true">next </button>
   </div>
-  <div v-else>success!!!!!!!</div>
+  <div v-else>
+     <button @click="steps.success = false; steps.keys = true"> back </button>
+    success!!!!!!!</div>
         <!-- Label: <input type="text" v-model="charts[0].data.datasets.label"> -->
         <!-- <input type="checkbox" name="options" id="" v-model="charts.options.responsive"> responsive
         <input type="checkbox" name="options" id="" v-model="charts.options.maintainAspectRatio"> maintainAspectRatio
@@ -44,7 +50,7 @@
 </template>
 <script>
 import cs from '@/api/CrudService'
-import router from '@/router/router'
+// import router from '@/router/router'
 export default {
   name: 'AddChart',
   data () {
@@ -93,7 +99,6 @@ export default {
           onClick: this.handle
         }
       },
-      newchart: {},
       id: ''
     }
   },
@@ -104,15 +109,17 @@ export default {
       this.charts.data.datasets[0].borderColor = this.randomColors()
       console.log(this.charts)
       cs.addChart(this.charts)
-
-      // this.id = cs.getLastId()
-      // console.log('getting id' + this.id)
-      // var promise1 = new Promise(function(resolve, reject) {
-      //   resolve('foo')
-      // })
-      // promise1.then(function(value) {
-      // })
-      router.push({name: 'chart', params: {id: this.id[0].id, type: 'line'}})
+      let _this = this
+      var promise1 = new Promise(function (resolve, reject) {
+        resolve(cs.getLastId())
+      })
+      promise1.then(function (value) {
+        _this.id = value
+        // router.push({name: 'chart', params: {id: parseInt(value[0].id), type: 'line'}})
+      }).catch(e => {
+        console.log(e)
+      })
+      console.log(this.id)
     },
     randomData () {
       var arr = []
@@ -122,7 +129,7 @@ export default {
       return arr
     },
     getLastId () {
-      console.log(cs.getLastId())
+      console.log('aa')
     },
     randomColors () {
       var arr = []

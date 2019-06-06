@@ -30,6 +30,8 @@ readed: {{JSON.stringify(read)}} <br/>
  <button @click="getAllCharts()" class="btn btn-primary">getAllCharts()</button><br>
  -->
   <button @click="addChart()" class="btn btn-primary">wygeneruj nowy wykres addChart() [doda sie na dole]</button><br> 
+    <button @click="getData" class="btn btn-primary">getdata</button><br> 
+
  <!-- <button @click="destroyDb()" class="btn btn-primary">destroyDb()</button><br>
  <button @click="readChart(1)" class="btn btn-primary">readChart(1)</button><br>
  <button @click="deleteChart(2)" class="btn btn-primary">deleteChart(2)</button><br>  -->

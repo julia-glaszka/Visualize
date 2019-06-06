@@ -1,13 +1,13 @@
 const axios = require('axios')
-const dataForge = require('data-forge')
+// const dataForge = require('data-forge')
 
 const getLabels = () => {
 
 }
 
 const getData = async () => {
-  const response = await axios('https://jsonplaceholder.typicode.com/todos')
-  const data = new dataForge.DataFrame(response.data)
+  const data = await axios('https://jsonplaceholder.typicode.com/todos')
+  // const data = new dataForge.DataFrame(response.data)
   console.log(data)
 }
 

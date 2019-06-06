@@ -18,8 +18,8 @@ const addChart = (newChart) => {
   }
 }
 const getLastId = () => {
+  var dane
   var db
-  var lastId = []
   var request = indexedDB.open(STORE_NAME, 1)
   request.onupgradeneeded = function () {
     request.result.createObjectStore(STORE_NAME, {keyPath: 'id', autoIncrement: true})
@@ -27,16 +27,15 @@ const getLastId = () => {
   request.onsuccess = function () {
     db = request.result
     var transaction = db.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME)
-    transaction.openCursor(null, 'prev').onsuccess = function (event) {
-      var cursor = event.target.result
+    transaction.openCursor(null, 'prev').onsuccess = async function (event) {
+      var cursor = await event.target.result
       if (cursor) {
-        lastId.push(cursor.value)
-        return 0
+        dane = cursor.value.id
       }
-      return cursor.value
     }
   }
-  return lastId
+  console.log(dane)
+  return dane
 }
 const readChart = (id) => {
   var db
