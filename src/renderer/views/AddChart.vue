@@ -8,12 +8,17 @@
   3. wybierasz keys po ktorym chcesz pobrac dane i wybierasz co chcesz zrobic z tym np suma, srednia
   4. po wygenerowaniu przekierowuje cie do /chart/:id/:type
    -->
+
+
+
+   <button @click="getLastId">get last id </button>
   <div v-if="steps.type" class="columns">
     <router-link to="/">back </router-link>
     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12"><h2>Choose type of chart</h2></div>
     <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6" @click="type='bar'"><img src="static/bar.png" class="img-responsive" alt=""></div>
     <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6" @click="type='line'"><img src="static/line.png" class="img-responsive" alt=""></div>
   
+    <button @click="getLastId"> get </button>
     <button @click="steps.type = false; steps.database = true"> next </button>
   </div>
   <div v-else-if="steps.database" class="columns">
@@ -45,7 +50,6 @@ export default {
   data () {
     return {
       type: '',
-      id: '',
       steps: {
         type: true,
         database: false,
@@ -89,7 +93,8 @@ export default {
           onClick: this.handle
         }
       },
-      newchart: {}
+      newchart: {},
+      id: ''
     }
   },
   methods: {
@@ -97,8 +102,17 @@ export default {
       this.charts.data.datasets[0].data = this.randomData()
       this.charts.data.datasets[0].backgroundColor = this.randomColors()
       this.charts.data.datasets[0].borderColor = this.randomColors()
+      console.log(this.charts)
       cs.addChart(this.charts)
-      router.push({name: 'chart', params: { id: 19 }})
+
+      // this.id = cs.getLastId()
+      // console.log('getting id' + this.id)
+      // var promise1 = new Promise(function(resolve, reject) {
+      //   resolve('foo')
+      // })
+      // promise1.then(function(value) {
+      // })
+      router.push({name: 'chart', params: {id: this.id[0].id, type: 'line'}})
     },
     randomData () {
       var arr = []

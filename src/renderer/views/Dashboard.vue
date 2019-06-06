@@ -50,6 +50,7 @@ readed: {{JSON.stringify(read)}} <br/>
 
 <script>
 import cs from '@/api/CrudService'
+import da from '@/api/DataAnalyze'
 // import idbs from '@/api/indexedDBService.js'
 // import { mapState, mapActions } from 'vuex'
 import ChartContainer from '@/components/ChartContainer'
@@ -118,6 +119,9 @@ export default {
     this.refresh()
   },
   methods: {
+    getData () {
+      da.getData()
+    },
     addChart () {
       this.chart.data.datasets[0].data = this.randomData()
       this.chart.data.datasets[0].backgroundColor = this.randomColors()
