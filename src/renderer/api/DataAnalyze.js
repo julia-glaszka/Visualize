@@ -11,16 +11,25 @@ const getData = async () => {
   console.log(data)
 }
 
-const artyhmetricSum = () => {
-
+const sum = (data) => {
+  return data.reduce((prev, next) => prev + next)
 }
-const avg = () => {
+const avg = (data) => {
+  return data.reduce((prev, next) => prev + next) / data.length
+}
+const maxm = (data) => {
+  return Math.max(...data)
+}
 
+const minm = (data) => {
+  return Math.min(...data)
 }
 
 export default {
   getLabels,
   getData,
-  artyhmetricSum,
-  avg
+  sum,
+  avg,
+  maxm,
+  minm
 }

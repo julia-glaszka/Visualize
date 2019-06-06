@@ -4,7 +4,7 @@
     {{ $route.params.id }}
     {{ $route.params.type }}
     <div v-if="isLoading">Loading ....</div>
-    
+    {{error}}
     <div v-if="isLoaded">
       {{JSON.stringify(charts)}}
       chartid {{charts.id}}
@@ -18,7 +18,7 @@
           <option value="bar">bar</option>
         </select>  -->
         <!-- trzeba tu te guziczki jakos podczepic pod data() i móc updateować chart w bazie za pomoca  cs.updateChart(id, newChartData) -->
-        Label: <input type="text" v-model="charts[0].data.datasets[0].label">
+        <!-- Label: <input type="text" v-model="charts[0].data.datasets[0].label">
         Url of database: <input type="url" v-model="db">
         <input type="checkbox" name="options" id="" v-model="charts[0].options.responsive"> responsive
         <input type="checkbox" name="options" id="" v-model="charts[0].options.maintainAspectRatio"> maintainAspectRatio
@@ -28,7 +28,7 @@
        <input type="color" name="background" id="" v-model="charts[0].data.datasets[0].backgroundColor[selectedData.index]">      
         borderColor :
         <input type="color" name="border" id="" v-model="charts[0].data.datasets[0].borderColor[selectedData.index]">  
-        <input type="button" value="" @click="reset"> 
+        <input type="button" value="" @click="reset">  -->
 
         <!-- koniec guziczkow -->
     </div>
@@ -59,7 +59,7 @@ export default {
       },
       charts: {},
       value: '',
-      error: 0
+      error: ''
     }
   },
   methods: {
@@ -80,12 +80,15 @@ export default {
   },
   mounted () {
     this.isLoading = true
-    this.charts = cs.readChart(parseInt(this.$route.params.id))
-    this.isLoading = false
-    this.isLoaded = true
-    // this.$EventBus.$on('update-options', (payload) => {
-    //   this.chart.options = payload
-    // })
+    let prms = new Promise((resolve, reject) => {
+      resolve(cs.readChart(parseInt(this.$route.params.id)))
+    })
+    prms.then((res) => {
+      this.charts = res
+    }).then(() => {
+      this.isLoading = false
+      this.isLoaded = true
+    })
   }
 }
 </script>

@@ -18,7 +18,7 @@ const addChart = (newChart) => {
   }
 }
 const getLastId = () => {
-  var dane
+  var data
   var db
   var request = indexedDB.open(STORE_NAME, 1)
   request.onupgradeneeded = function () {
@@ -28,14 +28,17 @@ const getLastId = () => {
     db = request.result
     var transaction = db.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME)
     transaction.openCursor(null, 'prev').onsuccess = async function (event) {
-      var cursor = await event.target.result
+      var cursor = event.target.result
       if (cursor) {
-        dane = cursor.value.id
+        data = cursor.value.id
+        cursor.continue()
+      } else {
+        return 0
       }
     }
   }
-  console.log(dane)
-  return dane
+  console.log(data)
+  return data
 }
 const readChart = (id) => {
   var db

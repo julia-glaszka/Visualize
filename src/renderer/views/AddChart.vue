@@ -9,16 +9,19 @@
   4. po wygenerowaniu przekierowuje cie do /chart/:id/:type
    -->
 
+THE LAST ID {{id}}
+THE SUM {{summary}}
+THE AVERAGE {{average}}
+THE MAXIMUM {{maximum}}
+THE MINIMUM {{minimum}}
 
-
-   <button @click="getLastId">get last id </button>
+   <button @click="analyze">analyze </button>
   <div v-if="steps.type" class="columns">
     <router-link to="/">back </router-link>
     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12"><h2>Choose type of chart</h2></div>
     <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6" @click="type='bar'"><img src="static/bar.png" class="img-responsive" alt=""></div>
     <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6" @click="type='line'"><img src="static/line.png" class="img-responsive" alt=""></div>
   
-    <button @click="getLastId"> get </button>
 
     <button @click="steps.type = false; steps.database = true"> next </button>
   </div>
@@ -50,12 +53,13 @@
 </template>
 <script>
 import cs from '@/api/CrudService'
-// import router from '@/router/router'
+import da from '@/api/DataAnalyze'
+import router from '@/router/router'
 export default {
   name: 'AddChart',
   data () {
     return {
-      type: '',
+      type: 'line',
       steps: {
         type: true,
         database: false,
@@ -99,7 +103,10 @@ export default {
           onClick: this.handle
         }
       },
-      id: ''
+      id: null,
+      summary: null,
+      average: null,
+      maximum: null
     }
   },
   methods: {
@@ -109,17 +116,9 @@ export default {
       this.charts.data.datasets[0].borderColor = this.randomColors()
       console.log(this.charts)
       cs.addChart(this.charts)
-      let _this = this
-      var promise1 = new Promise(function (resolve, reject) {
-        resolve(cs.getLastId())
-      })
-      promise1.then(function (value) {
-        _this.id = value
-        // router.push({name: 'chart', params: {id: parseInt(value[0].id), type: 'line'}})
-      }).catch(e => {
-        console.log(e)
-      })
-      console.log(this.id)
+      this.gtl().then((id) => {
+        router.push({name: 'chart', params: {id: id, type: 'line'}})
+      }).catch(e => { console.log('error with promise') })
     },
     randomData () {
       var arr = []
@@ -128,9 +127,44 @@ export default {
       }
       return arr
     },
-    getLastId () {
-      console.log('aa')
+    analyze () {
+      this.summary = da.sum(this.charts.data.datasets[0].data)
+      this.average = da.avg(this.charts.data.datasets[0].data)
+      this.maximum = da.maxm(this.charts.data.datasets[0].data)
+      this.minimum = da.minm(this.charts.data.datasets[0].data)
     },
+    gtl () {
+      return new Promise((resolve, reject) => {
+        const request = window.indexedDB.open('charts', 1)
+        request.onsuccess = () => {
+          const db = request.result
+          const transaction = db.transaction(['charts'], 'readonly')
+          const invoiceStore = transaction.objectStore('charts')
+          const getCursorRequest = invoiceStore.openCursor(null, 'prev')
+          getCursorRequest.onsuccess = e => {
+            const cursor = e.target.result
+            if (cursor) {
+              resolve(cursor.value.id)
+            }
+          }
+        }
+      })
+    },
+    // getLastId () {
+    //   const request = window.indexedDB.open('charts', 1)
+    //   request.onsuccess = () => {
+    //     const db = request.result
+    //     const transaction = db.transaction(['charts'], 'readonly')
+    //     const invoiceStore = transaction.objectStore('charts')
+    //     const getCursorRequest = invoiceStore.openCursor(null, 'prev')
+    //     getCursorRequest.onsuccess = e => {
+    //       const cursor = e.target.result
+    //       if (cursor) {
+    //         this.id = cursor.value.id
+    //       }
+    //     }
+    //   }
+    // },
     randomColors () {
       var arr = []
       for (var i = 0; i < 6; i++) {
