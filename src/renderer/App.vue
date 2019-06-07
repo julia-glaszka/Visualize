@@ -10,18 +10,6 @@
         </div>
       </div>
       <div class="navleft column col-xs-12 col-sm-12 col-md-12 col-lg-3 col-xl-3 col-3">
-        <div class="option">
-          <div class="hr"></div>
-          <svg id="main" data-name="main" xmlns="http://www.w3.org/2000/svg" width="28.341" height="26.646" viewBox="0 0 28.341 26.646">
-            <g id="house-outline" transform="translate(0 0)">
-              <g id="Group_4" data-name="Group 4" transform="translate(0 0)">
-                <path id="Path_6" data-name="Path 6" class="cls-1" d="M148.833,463.374a.8.8,0,0,0-.817.817v11.165h-5.792V470.8a.807.807,0,0,0-.787-.8h-4.188a.826.826,0,0,0-.832.8v4.559H130.64V464.562a.8.8,0,0,0-1.6,0v11.612a.794.794,0,0,0,.787.789h7.426a.794.794,0,0,0,.787-.789v-4.559h2.584v4.559a.8.8,0,0,0,.817.789h7.4a.794.794,0,0,0,.787-.789V464.191A.8.8,0,0,0,148.833,463.374Z" transform="translate(-125.164 -450.317)" />
-                <path id="Path_7" data-name="Path 7" class="cls-1" d="M28.11,41.936l-6.445-6.473V31.049a.816.816,0,0,0-.832-.814.8.8,0,0,0-.787.814v2.794L14.728,28.5a.781.781,0,0,0-.549-.253.807.807,0,0,0-.579.253L.248,41.847a.765.765,0,0,0,0,1.128.765.765,0,0,0,1.129,0L14.179,30.2,26.951,43.1a.789.789,0,0,0,.579.209.9.9,0,0,0,.579-.209A.843.843,0,0,0,28.11,41.936Z" transform="translate(0 -28.242)" />
-              </g>
-            </g>
-          </svg>
-          <span>Main</span>
-        </div>
         <router-link to="/">
         <div class="option">
           <div class="hr"></div>
@@ -58,6 +46,20 @@
         
         </div>
           </router-link>
+          <router-link to="/info">
+        <div class="option">
+          <div class="hr"></div>
+          <svg id="main" data-name="main" xmlns="http://www.w3.org/2000/svg" width="28.341" height="26.646" viewBox="0 0 28.341 26.646">
+            <g id="house-outline" transform="translate(0 0)">
+              <g id="Group_4" data-name="Group 4" transform="translate(0 0)">
+                <path id="Path_6" data-name="Path 6" class="cls-1" d="M148.833,463.374a.8.8,0,0,0-.817.817v11.165h-5.792V470.8a.807.807,0,0,0-.787-.8h-4.188a.826.826,0,0,0-.832.8v4.559H130.64V464.562a.8.8,0,0,0-1.6,0v11.612a.794.794,0,0,0,.787.789h7.426a.794.794,0,0,0,.787-.789v-4.559h2.584v4.559a.8.8,0,0,0,.817.789h7.4a.794.794,0,0,0,.787-.789V464.191A.8.8,0,0,0,148.833,463.374Z" transform="translate(-125.164 -450.317)" />
+                <path id="Path_7" data-name="Path 7" class="cls-1" d="M28.11,41.936l-6.445-6.473V31.049a.816.816,0,0,0-.832-.814.8.8,0,0,0-.787.814v2.794L14.728,28.5a.781.781,0,0,0-.549-.253.807.807,0,0,0-.579.253L.248,41.847a.765.765,0,0,0,0,1.128.765.765,0,0,0,1.129,0L14.179,30.2,26.951,43.1a.789.789,0,0,0,.579.209.9.9,0,0,0,.579-.209A.843.843,0,0,0,28.11,41.936Z" transform="translate(0 -28.242)" />
+              </g>
+            </g>
+          </svg>
+          <span>Informacje o Aplikacji </span>
+        </div>
+        </router-link>
       </div>
       <div class="content column col-xs-12 col-sm-12 col-md-12 col-lg-9 col-xl-9 col-9">
         <router-view></router-view>

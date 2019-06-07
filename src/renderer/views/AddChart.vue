@@ -1,29 +1,22 @@
 <template>
 
 
-<div class="container">
+<div class="container py-2">
   <!-- To taki generator nowych wykresow, nieskonczony na razie. 
   1. wybierasz typ jaki chcesz (line,bar)
   2. wybierasz baze z dostepnych (na razie nie ma ich)
   3. wybierasz keys po ktorym chcesz pobrac dane i wybierasz co chcesz zrobic z tym np suma, srednia
   4. po wygenerowaniu przekierowuje cie do /chart/:id/:type
    -->
-  TEST: 
-  THE LAST ID {{id}}
-  THE SUM {{summary}}
-  THE AVERAGE {{average}}
-  THE MAXIMUM {{maximum}}
-  THE MINIMUM {{minimum}}
- <router-link to="/">back </router-link>
-  <button @click="analyze" class="btn btn-primary">analyze </button>
   
   <div v-if="steps.type" class="columns">
-     
-      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-      <button @click="steps.type = false; steps.database = true" class="btn btn-primary"> next </button>
+    
+      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
+        <router-link to="/"><button class="btn btn-primary">Wróć</button> </router-link>
+      <button @click="steps.type = false; steps.database = true" class="btn btn-primary"> Dalej </button>
       </div>  
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-          <h2>Choose type of chart</h2>
+          <h2>Wybierz typ wykresu</h2>
       </div>
       <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6" @click="type='bar'">
           <img src="static/bar.png" class="img-responsive" alt="">
@@ -35,12 +28,12 @@
   </div>
   
   <div v-else-if="steps.database" class="columns">
-     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-          <button @click="steps.type = true; steps.database = false" class="btn btn-primary"> back </button>
-          <button @click="steps.database = false; steps.keys = true" class="btn btn-primary">next </button>
+     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
+          <button @click="steps.type = true; steps.database = false" class="btn btn-primary"> Cofnij </button>
+          <button @click="steps.database = false; steps.keys = true" class="btn btn-primary">Dalej </button>
       </div>
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-          <h2>Choose database</h2>
+          <h2>Wybierz bazę danych</h2>
       </div>
       <div v-for="(database, i) in databases" :key="i" class="col-sm-12 col-md-12 col-lg-4 col-xl-4 col-4 database">
         <div class="content">
@@ -52,62 +45,63 @@
   </div>
   
   <div v-else-if="steps.keys" class="columns">
-     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-        <button @click="steps.database = true; steps.keys = false" class="btn btn-primary"> back </button>
-      <button @click="steps.keys = false; steps.customize = true" class="btn btn-primary">next </button>
+     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
+        <button @click="steps.database = true; steps.keys = false" class="btn btn-primary"> Cofnij </button>
+      <button @click="steps.keys = false; steps.customize = true" class="btn btn-primary">Dalej </button>
       </div>
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-          <h2>Choose Data</h2>
+          <h2>Wybierz dane, jakie chcesz zwizualizować</h2>
       </div>
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-        <ul>
-          <li v-for="(data, i) in samplekeys" :key="i">{{data}}</li>
-        </ul>
+      jakiesdane
       </div>
      
       
   </div>
  
     <div v-else-if="steps.customize" class="columns">
-     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-        <button @click="steps.keys = true; steps.customize = false" class="btn btn-primary"> back </button>
-      <button @click="steps.customize = false; steps.finish = true" class="btn btn-primary">next </button>
+     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
+        <button @click="steps.keys = true; steps.customize = false" class="btn btn-primary"> Cofnij </button>
+      <button @click="steps.customize = false; steps.finish = true" class="btn btn-primary" :disabled="hasColor ? false : true">Dalej </button>
       </div>
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-          <h2>Customize Data</h2>
+          <h2>Spersonalizuj wygląd wykresu</h2>
       </div>
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-        <h2>Choose background color</h2>
-        <div class="add-bg" v-for="(color, i) in charts.data.datasets[0].backgroundColor" :key="i">
-          {{i}}. <input type="color" v-model="charts.data.datasets[0].backgroundColor[i]" colorformat="rgba">
-        </div>
-        <h2>Choose border color</h2>
-          <div class="add-bg" v-for="(color, i) in charts.data.datasets[0].borderColor" :key="i">
-          {{i}}. <input type="color" v-model="charts.data.datasets[0].borderColor[i]" colorformat="rgba">
-        </div>
+        <h2>Schemat kolorów</h2>
+       <sketch-picker v-model="colors">  </sketch-picker>
+       <swatches-picker v-model="colors">  </swatches-picker>
+       
       </div>
-     
       
   </div>
   <div v-else class="columns">
+    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
+        <button @click="steps.success = false; steps.customize = true" class="btn btn-primary"> Cofnij </button>
+        <button @click="generate" class="btn btn-primary">Wygeneruj</button>
+    </div>
     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-        <button @click="steps.success = false; steps.customize = true" class="btn btn-primary"> back </button>
-        <h2>success!!!!!!!</h2>
-        <button @click="generate" class="btn btn-primary">Generate</button>
+      <h2>Sukces! Przejdź do swojego wykresu i zobacz efekt!</h2>
     </div>
   </div>
 </div>
 
 </template>
 <script>
+import { Sketch, Swatches } from 'vue-color'
 import cs from '@/api/CrudService'
 import da from '@/api/DataAnalyze'
 import router from '@/router/router'
 export default {
   name: 'AddChart',
+  components: {
+    'sketch-picker': Sketch,
+    'swatches-picker': Swatches
+  },
   data () {
     return {
       type: 'line',
+      colors: 0,
       steps: {
         type: true,
         database: false,
@@ -160,86 +154,40 @@ export default {
           onClick: this.handle
         }
       },
-      id: null,
-      summary: null,
-      average: null,
-      maximum: null,
-      minimum: null,
-      samples: [
-        {
-          '_id': '5cf990793f119ae6e0e7531a',
-          'guid': '4fa01a1e-34dd-424b-a0d2-4b3df283f9ed',
-          'isActive': true,
-          'balance': '$2,032.14',
-          'age': 60,
-          'eyeColor': 'blue'
-        },
-        {
-          '_id': '5cf99079473d20355072f70b',
-          'guid': '11d5d647-408e-4513-9e5b-8d2b83727941',
-          'isActive': false,
-          'balance': '$1,121.68',
-          'age': 56,
-          'eyeColor': 'green'
-        },
-        {
-          '_id': '5cf990790aaf5562d4673d93',
-          'guid': '47c17261-5adf-4dd0-8f39-9de035a1b560',
-          'isActive': true,
-          'balance': '$3,217.08',
-          'age': 70,
-          'eyeColor': 'brown'
-        },
-        {
-          '_id': '5cf990790abf50425a58bdd7',
-          'guid': '6862f49f-80cc-4b41-96de-857edb53cf76',
-          'isActive': false,
-          'balance': '$3,162.11',
-          'age': 73,
-          'eyeColor': 'green'
-        },
-        {
-          '_id': '5cf99079079cdabd37dd013c',
-          'guid': 'f15e4e54-00ff-4fb6-beca-a77ee6585006',
-          'isActive': true,
-          'balance': '$2,985.17',
-          'age': 78,
-          'eyeColor': 'brown'
-        },
-        {
-          '_id': '5cf990797ece7f5619e1c3ee',
-          'guid': '9dbd4b73-f4b6-4fdd-b35e-f4acac134082',
-          'isActive': false,
-          'balance': '$2,102.29',
-          'age': 52,
-          'eyeColor': 'green'
-        },
-        {
-          '_id': '5cf99079a5f0dc897897640a',
-          'guid': '0b801f49-fbc8-458d-a2c3-d7738daa2fb9',
-          'isActive': false,
-          'balance': '$1,813.73',
-          'age': 95,
-          'eyeColor': 'green'
-        }
-      ]
-    }
-  },
-  computed: {
-    samplekeys: function () {
-      return Object.keys(this.samples[0])
+      id: null
     }
   },
   methods: {
     generate () {
       this.charts.data.datasets[0].data = this.randomData()
-      this.charts.data.datasets[0].backgroundColor = this.randomColors()
-      this.charts.data.datasets[0].borderColor = this.randomColors()
+      this.generateColor()
       console.log(this.charts)
       cs.addChart(this.charts)
       this.gtl().then((id) => {
         router.push({name: 'chart', params: {id: id, type: 'line'}})
       }).catch(e => { console.log('error with promise') })
+    },
+    generateColor () {
+      var color = []
+      var colorObj = this.colors.rgba
+      Math.decimal = function (n, k) {
+        var factor = Math.pow(10, k + 1)
+        n = Math.round(Math.round(n * factor) / 10)
+        return n / (factor / 10)
+      }
+      for (var i = 0; i < this.charts.data.datasets[0].data.length; i++) {
+        let a = Math.random()
+        if (a > 1) {
+          a = 1
+        } else if (a < 0) {
+          a = 0
+        } else if (!a || isNaN(a)) {
+          a = 1
+        }
+        color.push('rgba(' + colorObj.r + ', ' + colorObj.g + ', ' + colorObj.b + ', ' + Math.decimal(a, 2) + ')')
+      }
+      this.charts.data.datasets[0].backgroundColor = color
+      this.charts.data.datasets[0].borderColor = color
     },
     randomData () {
       var arr = []
@@ -270,31 +218,21 @@ export default {
           }
         }
       })
-    },
-    // getLastId () {
-    //   const request = window.indexedDB.open('charts', 1)
-    //   request.onsuccess = () => {
-    //     const db = request.result
-    //     const transaction = db.transaction(['charts'], 'readonly')
-    //     const invoiceStore = transaction.objectStore('charts')
-    //     const getCursorRequest = invoiceStore.openCursor(null, 'prev')
-    //     getCursorRequest.onsuccess = e => {
-    //       const cursor = e.target.result
-    //       if (cursor) {
-    //         this.id = cursor.value.id
-    //       }
-    //     }
+    }
+    // randomColors () {
+    //   var arr = []
+    //   for (var i = 0; i < 6; i++) {
+    //     var o = Math.round
+    //     var r = Math.random
+    //     var s = 255
+    //     arr.push('rgba(' + o(r() * s) + ',' + o(r() * s) + ',' + o(r() * s) + ',' + r().toFixed(1) + ')')
     //   }
-    // },
-    randomColors () {
-      var arr = []
-      for (var i = 0; i < 6; i++) {
-        var o = Math.round
-        var r = Math.random
-        var s = 255
-        arr.push('rgba(' + o(r() * s) + ',' + o(r() * s) + ',' + o(r() * s) + ',' + r().toFixed(1) + ')')
-      }
-      return arr
+    //   return arr
+    // }
+  },
+  computed: {
+    hasColor: function () {
+      return this.colors
     }
   }
 }
@@ -309,5 +247,12 @@ export default {
     }
   }
 
+.navi {
+  justify-content: space-between;
+  display: flex;
+  .to-right {
+    justify-content: end;
+  }
+}
 
 </style>

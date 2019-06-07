@@ -64,6 +64,7 @@
     "spectre.css": "^0.5.8",
     "vue": "^2.5.16",
     "vue-chartjs": "^3.4.2",
+    "vue-color": "^2.7.0",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",

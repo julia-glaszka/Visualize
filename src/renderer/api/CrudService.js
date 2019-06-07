@@ -159,14 +159,14 @@ const destroyDb = db => {
       dbDeleteRequest = indexedDB.deleteDatabase(db)
     }
     dbDeleteRequest.onsuccess = function () {
-      alert('Db is deleted')
+      console.log('Baza danych została usunięta')
       location.reload()
     }
     dbDeleteRequest.onerror = function () {
-      console.log('Error with deleting')
+      console.log('Wystąpił błąd podczas usuwania bazy danych. Zrestartuj aplikację i spróbuj jeszcze raz.')
     }
   } catch (e) {
-    console.log('Error on destroy -> deleteDatabase ')
+    console.log('Wystąpił błąd podczas usuwania bazy danych. Zrestartuj aplikację i spróbuj jeszcze raz.')
   }
 }
 
