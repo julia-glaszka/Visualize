@@ -14,11 +14,14 @@
   THE AVERAGE {{average}}
   THE MAXIMUM {{maximum}}
   THE MINIMUM {{minimum}}
-
-  <button @click="analyze">analyze </button>
+ <router-link to="/">back </router-link>
+  <button @click="analyze" class="btn btn-primary">analyze </button>
   
   <div v-if="steps.type" class="columns">
-      <router-link to="/">back </router-link>
+     
+      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
+      <button @click="steps.type = false; steps.database = true" class="btn btn-primary"> next </button>
+      </div>  
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
           <h2>Choose type of chart</h2>
       </div>
@@ -28,10 +31,14 @@
       <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6" @click="type='line'">
           <img src="static/line.png" class="img-responsive" alt="">
       </div>
-      <button @click="steps.type = false; steps.database = true"> next </button>
+      
   </div>
   
   <div v-else-if="steps.database" class="columns">
+     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
+          <button @click="steps.type = true; steps.database = false" class="btn btn-primary"> back </button>
+          <button @click="steps.database = false; steps.keys = true" class="btn btn-primary">next </button>
+      </div>
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
           <h2>Choose database</h2>
       </div>
@@ -41,31 +48,52 @@
            {{database.url}}
         </div>
       </div>
-      <button @click="steps.type = true; steps.database = false"> back </button>
-      <button @click="steps.database = false; steps.keys = true">next </button>
+     
   </div>
   
   <div v-else-if="steps.keys" class="columns">
+     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
+        <button @click="steps.database = true; steps.keys = false" class="btn btn-primary"> back </button>
+      <button @click="steps.keys = false; steps.customize = true" class="btn btn-primary">next </button>
+      </div>
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
           <h2>Choose Data</h2>
       </div>
-      <div class="column col-xs-12">
+      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
         <ul>
           <li v-for="(data, i) in samplekeys" :key="i">{{data}}</li>
         </ul>
       </div>
-      <div class="column col-xs-12">
-        <button @click="steps.database = true; steps.keys = false"> back </button>
-      <button @click="steps.keys = false; steps.finish = true">next </button>
-      </div>
+     
       
   </div>
-  
+ 
+    <div v-else-if="steps.customize" class="columns">
+     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
+        <button @click="steps.keys = true; steps.customize = false" class="btn btn-primary"> back </button>
+      <button @click="steps.customize = false; steps.finish = true" class="btn btn-primary">next </button>
+      </div>
+      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
+          <h2>Customize Data</h2>
+      </div>
+      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
+        <h2>Choose background color</h2>
+        <div class="add-bg" v-for="(color, i) in charts.data.datasets[0].backgroundColor" :key="i">
+          {{i}}. <input type="color" v-model="charts.data.datasets[0].backgroundColor[i]" colorformat="rgba">
+        </div>
+        <h2>Choose border color</h2>
+          <div class="add-bg" v-for="(color, i) in charts.data.datasets[0].borderColor" :key="i">
+          {{i}}. <input type="color" v-model="charts.data.datasets[0].borderColor[i]" colorformat="rgba">
+        </div>
+      </div>
+     
+      
+  </div>
   <div v-else class="columns">
     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-        <button @click="steps.success = false; steps.keys = true"> back </button>
+        <button @click="steps.success = false; steps.customize = true" class="btn btn-primary"> back </button>
         <h2>success!!!!!!!</h2>
-        <button @click="generate">Generate</button>
+        <button @click="generate" class="btn btn-primary">Generate</button>
     </div>
   </div>
 </div>
@@ -84,7 +112,8 @@ export default {
         type: true,
         database: false,
         keys: false,
-        finish: true
+        customize: false,
+        finish: false
       },
       databases: [{
         name: 'Populacja światowa',
