@@ -1,90 +1,171 @@
 <template>
 
 
-<div class="container py-2">
-  <!-- To taki generator nowych wykresow, nieskonczony na razie. 
+  <div class="container py-2">
+    <!-- To taki generator nowych wykresow, nieskonczony na razie. 
   1. wybierasz typ jaki chcesz (line,bar)
   2. wybierasz baze z dostepnych (na razie nie ma ich)
   3. wybierasz keys po ktorym chcesz pobrac dane i wybierasz co chcesz zrobic z tym np suma, srednia
   4. po wygenerowaniu przekierowuje cie do /chart/:id/:type
    -->
-  
-  <div v-if="steps.type" class="columns">
-    
+
+    <div v-if="steps.type" class="columns">
+
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
         <router-link to="/"><button class="btn btn-primary">Wróć</button> </router-link>
-      <button @click="steps.type = false; steps.database = true" class="btn btn-primary"> Dalej </button>
-      </div>  
+        <button @click="steps.type = false; steps.database = true" class="btn btn-primary"> Dalej </button>
+      </div>
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-          <h2>Wybierz typ wykresu</h2>
+        <h2>Wybierz typ wykresu</h2>
       </div>
       <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6" @click="type='bar'">
-          <img src="static/bar.png" class="img-responsive" alt="">
+        <img src="static/bar.png" class="img-responsive" alt="">
       </div>
       <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6" @click="type='line'">
-          <img src="static/line.png" class="img-responsive" alt="">
+        <img src="static/line.png" class="img-responsive" alt="">
       </div>
-      
-  </div>
-  
-  <div v-else-if="steps.database" class="columns">
-     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
-          <button @click="steps.type = true; steps.database = false" class="btn btn-primary"> Cofnij </button>
-          <button @click="steps.database = false; steps.keys = true" class="btn btn-primary">Dalej </button>
+
+    </div>
+
+    <div v-else-if="steps.database" class="columns">
+      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
+        <button @click="steps.type = true; steps.database = false" class="btn btn-primary"> Cofnij </button>
+        <button @click="steps.database = false; steps.keys = true" class="btn btn-primary">Dalej </button>
       </div>
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-          <h2>Wybierz bazę danych</h2>
+        <h2>Wybierz bazę danych</h2>
       </div>
       <div v-for="(database, i) in databases" :key="i" class="col-sm-12 col-md-12 col-lg-4 col-xl-4 col-4 database">
         <div class="content">
-           {{database.name}}
-           {{database.url}}
+          {{database.name}}
+          {{database.url}}
         </div>
       </div>
-     
-  </div>
-  
-  <div v-else-if="steps.keys" class="columns">
-     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
+
+    </div>
+
+    <div v-else-if="steps.keys" class="columns">
+      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
         <button @click="steps.database = true; steps.keys = false" class="btn btn-primary"> Cofnij </button>
-      <button @click="steps.keys = false; steps.customize = true" class="btn btn-primary">Dalej </button>
+        <button @click="getData(), steps.keys = false; steps.customize = true" class="btn btn-primary">Dalej </button>
       </div>
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-          <h2>Wybierz dane, jakie chcesz zwizualizować</h2>
+        <h2>Wybierz dane, jakie chcesz zwizualizować</h2>
       </div>
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-      jakiesdane
+        <div class="accordion">
+          <input type="checkbox" id="accordion-1" name="accordion-checkbox" hidden>
+          <label class="accordion-header" for="accordion-1">
+            <i class="icon icon-arrow-right mr-1"></i>
+            Wiek
+          </label>
+          <div class="accordion-body">
+            <ul>
+              <li>Wybierz wiek: <br> 
+              <input v-model="age" style="width: 10em;" class="slider tooltip" type="range" min="0" max="99" value="50" oninput="this.setAttribute('value', this.value);">
+              </li>
+            </ul>
+            <ul>
+              <li>
+            
+                  <div class="accordion">
+          <input type="checkbox" id="accordion-2" name="accordion-checkbox" hidden>
+          <label class="accordion-header" for="accordion-2">
+            <i class="icon icon-arrow-right mr-1"></i>
+          Wybierz kraj:
+          </label>
+          <div class="accordion-body">
+            <ul class="menu menu-nav">
+              <li class="menu-item" v-for="country in countries" :key="country.value"><a v-bind:class="[countryValue == country.value ? 'country-checked' : '']"><label @click="selectCountry(country.value)" ><input style="visibility: hidden; position:absolute;" name="country" type="checkbox">{{country.name}}</label></a></li>
+            </ul>
+          </div>
+        </div>
+              </li>
+            </ul>
+            <ul>
+              <li>
+            
+                  <div class="accordion">
+          <input type="checkbox" id="accordion-3" name="accordion-checkbox" hidden>
+          <label class="accordion-header" for="accordion-3">
+            <i class="icon icon-arrow-right mr-1"></i>
+          Wybierz płeć:
+          </label>
+          <div class="accordion-body">
+            <ul>
+              <div class="form-group">
+  <label class="form-radio">
+    <input type="radio" name="gender" value="male" v-model="gender" checked>
+    <i class="form-icon"></i> Male
+  </label>
+  <label class="form-radio">
+    <input type="radio" v-model="gender" value="female" name="gender">
+    <i class="form-icon"></i> Female
+  </label>
+  <label class="form-radio">
+    <input type="radio" v-model="gender" value="all" name="gender">
+    <i class="form-icon"></i> Obie
+  </label>
+</div>
+            </ul>
+          </div>
+        </div>
+              </li>
+            </ul>
+              <ul>
+              <li>
+            
+                  <div class="accordion">
+          <input type="checkbox" id="accordion-4" name="accordion-checkbox" hidden>
+          <label class="accordion-header" for="accordion-4">
+            <i class="icon icon-arrow-right mr-1"></i>
+          Wybierz rok:
+          </label>
+          <div class="accordion-body">
+            <ul>
+              <p style="color: gray;">Wybierz rok między 1950 a 2100</p>
+                <input v-model="date" style="width: 15em;" class="form-input" type="number" placeholder="00" value="66">
+            </ul>
+          </div>
+        </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
       </div>
-     
       
-  </div>
- 
+
+
+    </div>
+
     <div v-else-if="steps.customize" class="columns">
-     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
+      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
         <button @click="steps.keys = true; steps.customize = false" class="btn btn-primary"> Cofnij </button>
-      <button @click="steps.customize = false; steps.finish = true" class="btn btn-primary" :disabled="hasColor ? false : true">Dalej </button>
+        <button @click="steps.customize = false; steps.finish = true" class="btn btn-primary"
+          :disabled="hasColor ? false : true">Dalej </button>
       </div>
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-          <h2>Spersonalizuj wygląd wykresu</h2>
+        <h2>Spersonalizuj wygląd wykresu</h2>
       </div>
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
         <h2>Schemat kolorów</h2>
-       <sketch-picker v-model="colors">  </sketch-picker>
-       <swatches-picker v-model="colors">  </swatches-picker>
-       
+        <sketch-picker v-model="colors"> </sketch-picker>
+        <swatches-picker v-model="colors"> </swatches-picker>
+
       </div>
-      
-  </div>
-  <div v-else class="columns">
-    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
+
+    </div>
+    <div v-else class="columns">
+      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
         <button @click="steps.success = false; steps.customize = true" class="btn btn-primary"> Cofnij </button>
         <button @click="generate" class="btn btn-primary">Wygeneruj</button>
-    </div>
-    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-      <h2>Sukces! Przejdź do swojego wykresu i zobacz efekt!</h2>
+      </div>
+      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
+        <h2>Sukces! Przejdź do swojego wykresu i zobacz efekt!</h2>
+      </div>
     </div>
   </div>
-</div>
 
 </template>
 <script>
@@ -154,10 +235,35 @@ export default {
           onClick: this.handle
         }
       },
-      id: null
+      isValid: false,
+      countryValue: null,
+      id: null,
+      xhttpData: null,
+      age: null,
+      gender: null,
+      date: null,
+      countries: [{name: 'Anglia', value: 'England'}, {name: 'Brazylia', value: 'Brazil'}, {name: 'Stany Zjednoczone', value: 'United States'}, {name: 'Portugalia', value: 'Portugal'}, {name: 'Niemcy', value: 'Germany'}, {name: 'Grecja', value: 'Greece'}, {name: 'Włochy', value: 'Italy'}]
     }
   },
   methods: {
+    selectCountry (input) {
+      this.countryValue = input
+    },
+    getData () {
+      var xhttp = new XMLHttpRequest()
+      xhttp.open('GET', `http://54.72.28.201/1.0/population/${this.date}/${this.countryValue}/${this.age}/?format=json`, false)
+      xhttp.onreadystatechange = function () {
+        if (xhttp.readyState === 4 && xhttp.status === 200) {
+          this.xhttpData = JSON.parse(xhttp.responseText)
+          this.isValid = true
+          console.log(this.readyState)
+        } else if (xhttp.status === 400) {
+          this.isValid = false
+          alert('Nie wypełniłeś wszystkich pól')
+        }
+      }
+      xhttp.send()
+    },
     generate () {
       this.charts.data.datasets[0].data = this.randomData()
       this.generateColor()
@@ -255,4 +361,18 @@ export default {
   }
 }
 
+.menu .menu-item > a > label {
+    border-radius: .1rem;
+    color: inherit;
+    display: block;
+    margin: 0 -.4rem;
+    padding: .2rem .4rem;
+    text-decoration: none;
+}
+
+.country-checked{
+  background: #f1f1fc;
+  color: #5755d9;
+  padding: 0.2rem 0.4rem;
+}
 </style>

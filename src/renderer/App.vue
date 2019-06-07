@@ -79,8 +79,9 @@
 </script>
 <style lang="scss">
 @import url(//fonts.googleapis.com/css?family=Roboto);
-@import 'node_modules/spectre.css/src/spectre';
-
+@import 'node_modules/spectre.css/dist/spectre.min';
+@import 'node_modules/spectre.css/dist/spectre-icons.min';
+@import 'node_modules/spectre.css/dist/spectre-exp.min';
 body {
   margin: 0;
   padding: 0;
@@ -180,5 +181,11 @@ h2 {
       height: 100%;
       background-color: #f2f2f2;
     }
+  }
+
+  .accordion{
+  ul {
+    list-style-type: none;
+  }
   }
 </style>
