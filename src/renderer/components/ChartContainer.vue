@@ -6,13 +6,33 @@
         <div  v-else-if="type=='bar'">
             <BarChart :chartData="data" :options="options"/>
         </div>
-        <div v-else> brakuje czegos xd</div>
+
+  <div  v-else-if="type=='bubble'">
+            <BubbleChart :chartData="data" :options="options"/>
+        </div>
+          <div  v-else-if="type=='doughnut'">
+            <DoughnutChart :chartData="data" :options="options"/>
+        </div>
+          <div  v-else-if="type=='pie'">
+            <PieChart :chartData="data" :options="options"/>
+        </div>
+          <div  v-else-if="type=='polarArea'">
+            <PolarAreaChart :chartData="data" :options="options"/>
+        </div>
+          <div  v-else-if="type=='scatter'">
+            <ScatterChart :chartData="data" :options="options"/>
+        </div>        <div v-else> brakuje czegos xd</div>
        
     </div>
 </template>
 <script>
 import LineChart from '@/charts/LineChart.vue'
 import BarChart from '@/charts/BarChart.vue'
+import BubbleChart from '@/charts/BubbleChart.vue'
+import DoughnutChart from '@/charts/DoughnutChart.vue'
+import PieChart from '@/charts/PieChart.vue'
+import PolarAreaChart from '@/charts/PolarAreaChart.vue'
+import ScatterChart from '@/charts/ScatterChart.vue'
 export default {
   name: 'ChartContainer',
   props: {
@@ -35,7 +55,12 @@ export default {
   },
   components: {
     LineChart,
-    BarChart
+    BarChart,
+    BubbleChart,
+    DoughnutChart,
+    PieChart,
+    PolarAreaChart,
+    ScatterChart
   }
 
 }

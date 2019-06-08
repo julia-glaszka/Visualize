@@ -18,12 +18,10 @@
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
         <h2>Wybierz typ wykresu</h2>
       </div>
-      <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6" @click="type='bar'">
-        <img src="static/bar.png" class="img-responsive" alt="">
+      <div v-for="(typex, j) in types" :key="j" class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6" @click="chart.type=typex.title">
+        <img :src="typex.image" class="img-responsive" alt="">
       </div>
-      <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6" @click="type='line'">
-        <img src="static/line.png" class="img-responsive" alt="">
-      </div>
+     
 
     </div>
 
@@ -59,7 +57,7 @@
           <input type="checkbox" id="accordion-1" name="accordion-checkbox" checked hidden>
           <label class="accordion-header" for="accordion-1">
             <i class="icon icon-arrow-right mr-1"></i>
-            Dodaj pojedyńcze dane
+            Dodaj pojedyncze dane
           </label>
           <div class="accordion-body">
             <ul>
@@ -199,7 +197,7 @@
         <h2>Spersonalizuj wygląd wykresu</h2>
       </div>
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-6">
-        <ChartContainer :type="type" :data="charts.data" :id="0" :options="charts.options" :key="keyx" />
+        <ChartContainer :type="chart.type" :data="chart.data" :id="0" :options="chart.options" :key="keyx" />
 
       </div>
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-6">
@@ -238,7 +236,6 @@ export default {
   data () {
     return {
       keyx: 11,
-      type: 'line',
       colors: 0,
       steps: {
         type: true,
@@ -247,6 +244,34 @@ export default {
         customize: false,
         finish: false
       },
+      types: [{
+        title: 'line',
+        image: 'static/line.png'
+      },
+      {
+        title: 'bar',
+        image: 'static/bar.png'
+      },
+      {
+        title: 'scatter',
+        image: 'static/scatter.png'
+      },
+      {
+        title: 'pie',
+        image: 'static/pie.png'
+      },
+      {
+        title: 'polarArea',
+        image: 'static/polarArea.png'
+      },
+      {
+        title: 'bubble',
+        image: 'static/bubble.png'
+      },
+      {
+        title: 'doughnut',
+        image: 'static/doughnut.png'
+      }],
       databases: [{
         name: 'Populacja światowa',
         url: ''
@@ -256,7 +281,8 @@ export default {
         url: ''
       }],
       loading: false,
-      charts: {
+      chart: {
+        type: 'line',
         data: {
           labels: [],
           datasets: [{
@@ -306,16 +332,16 @@ export default {
   },
   methods: {
     useData () {
-      this.charts.data.labels.length = 0
-      this.charts.data.datasets[0].data.length = 0
+      this.chart.data.labels.length = 0
+      this.chart.data.datasets[0].data.length = 0
       for (let i = 0; i < this.chartDataArray.length; i++) {
-        this.charts.data.labels.push(`${this.chartDataArray[i].name} (${this.chartDataArray[i].gender})`)
+        this.chart.data.labels.push(`${this.chartDataArray[i].name} (${this.chartDataArray[i].gender})`)
         if (this.chartDataArray[i].gender === 'Mężczyźni') {
-          this.charts.data.datasets[0].data.push(this.chartDataArray[i].gotData[0].males)
+          this.chart.data.datasets[0].data.push(this.chartDataArray[i].gotData[0].males)
         } else if (this.chartDataArray[i].gender === 'Kobiety') {
-          this.charts.data.datasets[0].data.push(this.chartDataArray[i].gotData[0].females)
+          this.chart.data.datasets[0].data.push(this.chartDataArray[i].gotData[0].females)
         } else if (this.chartDataArray[i].gender === 'Wszyscy') {
-          this.charts.data.datasets[0].data.push(this.chartDataArray[i].gotData[0].total)
+          this.chart.data.datasets[0].data.push(this.chartDataArray[i].gotData[0].total)
         }
       }
     },
@@ -372,10 +398,10 @@ export default {
     },
     generate () {
       this.generateColor()
-      console.log(this.charts)
-      cs.addChart(this.charts)
+      console.log(this.chart)
+      cs.addChart(this.chart)
       this.gtl().then((id) => {
-        router.push({name: 'chart', params: {id: id, type: 'line'}})
+        router.push({name: 'chart', params: {id: id, type: this.chart.type}})
       }).catch(e => { console.log('error with promise') })
     },
     generateColor () {
@@ -386,7 +412,7 @@ export default {
         n = Math.round(Math.round(n * factor) / 10)
         return n / (factor / 10)
       }
-      for (var i = 0; i < this.charts.data.datasets[0].data.length; i++) {
+      for (var i = 0; i < this.chart.data.datasets[0].data.length; i++) {
         let a = Math.random()
         if (a > 1) {
           a = 1
@@ -397,8 +423,8 @@ export default {
         }
         color.push('rgba(' + colorObj.r + ', ' + colorObj.g + ', ' + colorObj.b + ', ' + Math.decimal(a, 2) + ')')
       }
-      this.charts.data.datasets[0].backgroundColor = color
-      this.charts.data.datasets[0].borderColor = color
+      this.chart.data.datasets[0].backgroundColor = color
+      this.chart.data.datasets[0].borderColor = color
       this.keyx++
     },
     randomData () {
@@ -409,10 +435,10 @@ export default {
       return arr
     },
     analyze () {
-      this.summary = da.sum(this.charts.data.datasets[0].data)
-      this.average = da.avg(this.charts.data.datasets[0].data)
-      this.maximum = da.maxm(this.charts.data.datasets[0].data)
-      this.minimum = da.minm(this.charts.data.datasets[0].data)
+      this.summary = da.sum(this.chart.data.datasets[0].data)
+      this.average = da.avg(this.chart.data.datasets[0].data)
+      this.maximum = da.maxm(this.chart.data.datasets[0].data)
+      this.minimum = da.minm(this.chart.data.datasets[0].data)
     },
     gtl () {
       return new Promise((resolve, reject) => {

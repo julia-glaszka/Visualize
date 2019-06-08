@@ -41,7 +41,7 @@ readed: {{JSON.stringify(read)}} <br/>
         <div class="grid-item" v-for="(chartx, i) in charts" :key="i">
  <div class="chart-card"> 
       <!-- <button @click="deleteChart(i)">delete chart {{i}}</button> -->
-      <router-link :to="`/chart/${chartx.id}/${types[i%2]}`"> <ChartContainer :type="types[i%2]" :data="chartx.data" :id="chartx.id" :options="chartx.options"/> </router-link>
+      <router-link :to="`/chart/${chartx.id}/${chartx.type}`"> <ChartContainer :type="chartx.type" :data="chartx.data" :id="chartx.id" :options="chartx.options"/> </router-link>
     </div>
         </div>
  
@@ -70,10 +70,10 @@ export default {
       scheme: [5, 3, 4, 4, 4, 4, 6, 6, 2, 4, 6],
       charts: [],
       read: {},
-      types: ['line', 'bar'],
       isLoading: false,
       isLoaded: false,
       chart: {
+        type: 'line',
         data: {
           labels: ['Bulki', 'Chleb', 'Pączki', 'Drożdzówki', 'Ciasto', 'Ciasteczka'],
           datasets: [{

@@ -99,7 +99,7 @@
         </div>
         </router-link>
       </div>
-      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-9 col-xl-10 col-10" style="padding: 0;">
+      <div class="column col-xs-12 col-sm-12 col-md-9 col-lg-9 col-xl-10 col-10" style="padding: 0;">
         <router-view></router-view>
       </div>
     </div>
