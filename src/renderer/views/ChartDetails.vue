@@ -1,13 +1,8 @@
 <template>
-  <div>
-    <router-link to="/">back</router-link>
-    {{ $route.params.id }}
-    {{ $route.params.type }}
-    <div v-if="isLoading">Loading ....</div>
-    {{error}}
+  <div class="columns">
+    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi"> <router-link to="/">back</router-link></div>
+    <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6"> <div v-if="isLoading">Loading ....</div>
     <div v-if="isLoaded">
-      {{JSON.stringify(charts)}}
-      chartid {{charts.id}}
       <ChartContainer :type="$route.params.type" :data="charts[0].data" :id="charts[0].id" :options="charts[0].options"/>
       <div>
         <!-- 
@@ -33,7 +28,9 @@
         <!-- koniec guziczkow -->
     </div>
 
-      </div>
+      </div></div>
+    <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">pszyciski</div>
+    
    
 
     </div>

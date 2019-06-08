@@ -1,12 +1,15 @@
 <template>
-<div class="container">
-  <div class="columns">
+<div class="container view-content">
+  
+      <div class="column col-12 section-title">
+        <h1 class="text-dark">Twoje Wykresy</h1>
+        <p class="text-gray">Zbiór wszystkich dotychczas stworzonych wykresów.</p>
       
-    <div v-if="isLoading" class="column">loading ....</div>
+      </div>
+    <div v-if="isLoading" class="columns column">loading ....</div>
     
     <div v-if="isLoaded" class="columns column">
-      <div class="column col-12">
-
+      
         <!-- jest takie cos jak vuedevtools w tym okienku co ci sie wyswietla, 
         odpalasz zwykle devtoolsy jesli sie same nie wlaczyly (ctrl + shift + i) 
         masz takie zakladki jak elements, console itd i znalezc trzeba "vue" , 
@@ -17,7 +20,7 @@
         <!--
           TU JEST TROCHE PRZYKLADOW JAK WYWOLYWAC FUNKCJE ITD, ODKOMENTUJ I ZOBACZ JAK DZIALA
            <router-link to="/add">add new chart</router-link> -->
-  <br>
+
   <!-- <router-link to="/chart/1/line">chartDetails 1 </router-link>
   <router-link to="/chart/3/bar">chartDetails 3</router-link>
   <router-link to="/chart/4/line">chartDetails 4</router-link>
@@ -29,25 +32,28 @@
 readed: {{JSON.stringify(read)}} <br/>
  <button @click="getAllCharts()" class="btn btn-primary">getAllCharts()</button><br>
  -->
-  <button @click="addChart()" class="btn btn-primary">wygeneruj nowy wykres addChart() [doda sie na dole]</button><br> 
-    <button @click="getData" class="btn btn-primary">getdata</button><br> 
 
  <!-- <button @click="destroyDb()" class="btn btn-primary">destroyDb()</button><br>
  <button @click="readChart(1)" class="btn btn-primary">readChart(1)</button><br>
  <button @click="deleteChart(2)" class="btn btn-primary">deleteChart(2)</button><br>  -->
-      </div>
-    <div  v-for="(chartx, i) in charts" :key="i" class="column col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-6"> 
+    
+      <div class="grid-layout">
+        <div class="grid-item" v-for="(chartx, i) in charts" :key="i">
+ <div class="chart-card"> 
       <!-- <button @click="deleteChart(i)">delete chart {{i}}</button> -->
-      <ChartContainer :type="types[i%2]" :data="chartx.data" :id="chartx.id" :options="chartx.options"/>
-      <router-link :to="`/chart/${chartx.id}/${types[i%2]}`"> <button class="btn btn-primary">Go to chart no. {{chartx.id}} </button> </router-link>
+      <router-link :to="`/chart/${chartx.id}/${types[i%2]}`"> <ChartContainer :type="types[i%2]" :data="chartx.data" :id="chartx.id" :options="chartx.options"/> </router-link>
     </div>
+        </div>
+ 
+      </div>
+  
+
+<!-- :class="`column col-xs-12 col-sm-12 col-md-12 col-lg-${scheme[i%scheme.length]} col-xl-${scheme[i%scheme.length]} col-${scheme[i%scheme.length]}`" -->
+    
     </div>
 
   </div>
   
-
-
-</div>
 </template>
 
 <script>
@@ -61,6 +67,7 @@ export default {
   components: { ChartContainer },
   data () {
     return {
+      scheme: [5, 3, 4, 4, 4, 4, 6, 6, 2, 4, 6],
       charts: [],
       read: {},
       types: ['line', 'bar'],
@@ -181,3 +188,49 @@ export default {
   // }
 }
 </script>
+<style lang="scss" >
+  
+.grid-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-gap: 10px;
+    grid-auto-rows: minmax(180px, auto);
+    grid-auto-flow: dense;
+    padding: 10px;
+    width: 100%;
+}
+
+.grid-item {
+ 
+    padding: .6rem;
+    
+    &:nth-child(3n+2) {
+      grid-column-end: span 2;
+      grid-row-end: span 2;
+    }
+    .chart-card {
+      padding: 6px; 
+      border-radius: 4px;
+       background: #ffffff;
+       border: 1px solid rgb(233, 233, 233);
+    }
+}
+
+</style>
+<style lang="scss" scoped>
+
+.view-content {
+ 
+  background: #EFF5F8;
+
+}
+.container {
+  padding-left: 0;
+  padding-right: 0;
+}
+.section-title {
+   padding-top: 3rem;
+   background: #F3F5F4;
+   border-bottom: 1px solid #EDF1F0;
+}
+</style>

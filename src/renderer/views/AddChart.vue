@@ -124,7 +124,7 @@
           <div class="accordion-body">
             <ul>
               <p style="color: gray;">Wybierz rok między 1950 a 2100</p>
-                <input v-model="date" style="width: 15em;" class="form-input" type="number" placeholder="00" value="66">
+                <input v-model="date" style="width: 15em;" class="form-input" type="number" placeholder="00" min="1950" value="1960" max="2100">
             </ul>
           </div>
         </div>
@@ -144,7 +144,7 @@
           Wybrane dane do wirtualizacji
           </label>
           <div class="accordion-body">
-            <ul v-for="(chart, index) in chartDataArray">
+            <ul v-for="(chart, index) in chartDataArray" :key="index">
               <li>
                    <div class="accordion">
           <input type="checkbox" :id="'accordion'+index" name="accordion-checkbox" checked hidden>
@@ -190,11 +190,15 @@
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
         <h2>Spersonalizuj wygląd wykresu</h2>
       </div>
-      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
+      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-6">
+              <ChartContainer :type="type" :data="charts.data" :id="0" :options="charts.options" :key="keyx"/>
+
+      </div>
+      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-6">
         <h2>Schemat kolorów</h2>
         <sketch-picker v-model="colors"> </sketch-picker>
         <swatches-picker v-model="colors"> </swatches-picker>
-
+<button @click="generateColor">update</button>
       </div>
 
     </div>
@@ -213,16 +217,19 @@
 <script>
 import { Sketch, Swatches } from 'vue-color'
 import cs from '@/api/CrudService'
+import ChartContainer from '@/components/ChartContainer'
 import da from '@/api/DataAnalyze'
 import router from '@/router/router'
 export default {
   name: 'AddChart',
   components: {
     'sketch-picker': Sketch,
-    'swatches-picker': Swatches
+    'swatches-picker': Swatches,
+    ChartContainer
   },
   data () {
     return {
+      keyx: 11,
       type: 'line',
       colors: 0,
       steps: {
@@ -349,6 +356,7 @@ export default {
       }
       this.charts.data.datasets[0].backgroundColor = color
       this.charts.data.datasets[0].borderColor = color
+      this.keyx++
     },
     randomData () {
       var arr = []
