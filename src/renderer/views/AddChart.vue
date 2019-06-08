@@ -52,12 +52,12 @@
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
         <h2>Wybierz dane, jakie chcesz zwizualizować</h2>
       </div>
-      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
+      <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
         <div class="accordion">
           <input type="checkbox" id="accordion-1" name="accordion-checkbox" hidden>
           <label class="accordion-header" for="accordion-1">
             <i class="icon icon-arrow-right mr-1"></i>
-            Wiek
+            Dodaj pojedyńcze dane
           </label>
           <div class="accordion-body">
             <ul>
@@ -76,7 +76,7 @@
           </label>
           <div class="accordion-body">
             <ul class="menu menu-nav">
-              <li class="menu-item" v-for="country in countries" :key="country.value"><a v-bind:class="[countryValue == country.value ? 'country-checked' : '']"><label @click="selectCountry(country.value)" ><input style="visibility: hidden; position:absolute;" name="country" type="checkbox">{{country.name}}</label></a></li>
+              <li class="menu-item" v-for="country in countries" :key="country.value"><a v-bind:class="[countryValue == country.value ? 'country-checked' : '']"><label @click="selectCountry(country.name, country.value)" ><input style="visibility: hidden; position:absolute;" name="country" type="checkbox">{{country.name}}</label></a></li>
             </ul>
           </div>
         </div>
@@ -129,12 +129,54 @@
           </div>
         </div>
               </li>
+              <li><button @click="getData()" class="btn btn-primary">Zaakceptuj</button></li>
             </ul>
           </div>
         </div>
 
       </div>
       
+       <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
+            <div class="accordion">
+          <input type="checkbox" id="accordion-5" name="accordion-checkbox" checked hidden>
+          <label class="accordion-header" for="accordion-5">
+            <i class="icon icon-arrow-right mr-1"></i>
+          Wybrane dane do wirtualizacji
+          </label>
+          <div class="accordion-body">
+            <ul v-for="(chart, index) in chartDataArray">
+              <li>
+                   <div class="accordion">
+          <input type="checkbox" :id="'accordion'+index" name="accordion-checkbox" checked hidden>
+          <label class="accordion-header" :for="'accordion'+index">
+            <i class="icon icon-arrow-right mr-1"></i>
+          Dane {{index+1}}
+          </label>
+          <div class="accordion-body">
+           <ul>
+             <li style="display: flex; flex-direction: column">
+         <span>Kraj: <b>{{chart.name}}</b></span>
+          <span>Płeć: <b>{{chart.gender}}</b></span>
+          <span>Rok: <b>{{chart.date}}</b></span>
+          </li>
+           </ul>
+          </div>
+        </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+
+
+<!-- 
+ <ul v-else style="display: flex; flex-direction: column;">
+                <li v-for="chart in chartDataArray">
+    
+        </li> 
+            </ul> -->
+
 
 
     </div>
@@ -235,9 +277,11 @@ export default {
           onClick: this.handle
         }
       },
+      chartDataArray: [],
       isValid: false,
       countryValue: null,
       id: null,
+      name: null,
       xhttpData: null,
       age: null,
       gender: null,
@@ -246,16 +290,27 @@ export default {
     }
   },
   methods: {
-    selectCountry (input) {
-      this.countryValue = input
+    selectCountry (name, value) {
+      this.countryValue = value
+      this.name = name
     },
     getData () {
       var xhttp = new XMLHttpRequest()
+      var _this = this
       xhttp.open('GET', `http://54.72.28.201/1.0/population/${this.date}/${this.countryValue}/${this.age}/?format=json`, false)
       xhttp.onreadystatechange = function () {
         if (xhttp.readyState === 4 && xhttp.status === 200) {
           this.xhttpData = JSON.parse(xhttp.responseText)
           this.isValid = true
+          var chartData = {
+            name: _this.name,
+            countryValue: _this.countryValue,
+            age: _this.age,
+            gender: _this.gender,
+            date: _this.date
+          }
+          _this.chartDataArray.push(chartData)
+          console.log(_this.chartDataArray)
           console.log(this.readyState)
         } else if (xhttp.status === 400) {
           this.isValid = false

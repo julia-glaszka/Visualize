@@ -188,4 +188,13 @@ h2 {
     list-style-type: none;
   }
   }
+
+  a:-webkit-any-link {
+    color: -webkit-link;
+    cursor: auto;
+    text-decoration: none;
+    text-decoration-line: none;
+    text-decoration-style: none;
+    text-decoration-color: none;
+}
 </style>
