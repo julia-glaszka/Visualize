@@ -47,7 +47,10 @@
     <div v-else-if="steps.keys" class="columns">
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
         <button @click="steps.database = true; steps.keys = false" class="btn btn-primary"> Cofnij </button>
-        <button @click="getData(), steps.keys = false; steps.customize = true" class="btn btn-primary">Dalej </button>
+        <button v-if="isValid" @click="steps.keys = false; steps.customize = true"
+          class="btn btn-primary">Dalej</button>
+        <div style="cursor: pointer;" @click="checkIsValid()" v-else><button class="btn btn-primary disabled">Dalej</button>
+        </div>
       </div>
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
         <h2>Wybierz dane, jakie chcesz zwizualizować</h2>
@@ -61,116 +64,122 @@
           </label>
           <div class="accordion-body">
             <ul>
-              <li>Wybierz wiek: <br> 
-              <input v-model="age" style="width: 10em;" class="slider tooltip" type="range" min="0" max="99" value="50" oninput="this.setAttribute('value', this.value);">
+              <li>Wybierz wiek: <br>
+                <input v-model="age" style="width: 10em;" class="slider tooltip" type="range" min="0" max="99"
+                  value="50" oninput="this.setAttribute('value', this.value);">
               </li>
             </ul>
             <ul>
               <li>
-            
-                  <div class="accordion">
-          <input type="checkbox" id="accordion-2" name="accordion-checkbox" hidden>
-          <label class="accordion-header" for="accordion-2">
-            <i class="icon icon-arrow-right mr-1"></i>
-          Wybierz kraj:
-          </label>
-          <div class="accordion-body">
-            <ul class="menu menu-nav">
-              <li class="menu-item" v-for="country in countries" :key="country.value"><a v-bind:class="[countryValue == country.value ? 'country-checked' : '']"><label @click="selectCountry(country.name, country.value)" ><input style="visibility: hidden; position:absolute;" name="country" type="checkbox">{{country.name}}</label></a></li>
-            </ul>
-          </div>
-        </div>
+
+                <div class="accordion">
+                  <input type="checkbox" id="accordion-2" name="accordion-checkbox" hidden>
+                  <label class="accordion-header" for="accordion-2">
+                    <i class="icon icon-arrow-right mr-1"></i>
+                    Wybierz kraj:
+                  </label>
+                  <div class="accordion-body">
+                    <ul class="menu menu-nav">
+                      <li class="menu-item" v-for="country in countries" :key="country.value"><a
+                          v-bind:class="[countryValue == country.value ? 'country-checked' : '']"><label
+                            @click="selectCountry(country.name, country.value)"><input
+                              style="visibility: hidden; position:absolute;" name="country"
+                              type="checkbox">{{country.name}}</label></a></li>
+                    </ul>
+                  </div>
+                </div>
               </li>
             </ul>
             <ul>
               <li>
-            
-                  <div class="accordion">
-          <input type="checkbox" id="accordion-3" name="accordion-checkbox" hidden>
-          <label class="accordion-header" for="accordion-3">
-            <i class="icon icon-arrow-right mr-1"></i>
-          Wybierz płeć:
-          </label>
-          <div class="accordion-body">
-            <ul>
-              <div class="form-group">
-  <label class="form-radio">
-    <input type="radio" name="gender" value="male" v-model="gender" checked>
-    <i class="form-icon"></i> Male
-  </label>
-  <label class="form-radio">
-    <input type="radio" v-model="gender" value="female" name="gender">
-    <i class="form-icon"></i> Female
-  </label>
-  <label class="form-radio">
-    <input type="radio" v-model="gender" value="all" name="gender">
-    <i class="form-icon"></i> Obie
-  </label>
-</div>
-            </ul>
-          </div>
-        </div>
+
+                <div class="accordion">
+                  <input type="checkbox" id="accordion-3" name="accordion-checkbox" hidden>
+                  <label class="accordion-header" for="accordion-3">
+                    <i class="icon icon-arrow-right mr-1"></i>
+                    Wybierz płeć:
+                  </label>
+                  <div class="accordion-body">
+                    <ul>
+                      <div class="form-group">
+                        <label class="form-radio">
+                          <input type="radio" name="gender" value="male" v-model="gender" checked>
+                          <i class="form-icon"></i> Male
+                        </label>
+                        <label class="form-radio">
+                          <input type="radio" v-model="gender" value="female" name="gender">
+                          <i class="form-icon"></i> Female
+                        </label>
+                        <label class="form-radio">
+                          <input type="radio" v-model="gender" value="all" name="gender">
+                          <i class="form-icon"></i> Obie
+                        </label>
+                      </div>
+                    </ul>
+                  </div>
+                </div>
               </li>
             </ul>
-              <ul>
+            <ul>
               <li>
-            
-                  <div class="accordion">
-          <input type="checkbox" id="accordion-4" name="accordion-checkbox" hidden>
-          <label class="accordion-header" for="accordion-4">
-            <i class="icon icon-arrow-right mr-1"></i>
-          Wybierz rok:
-          </label>
-          <div class="accordion-body">
-            <ul>
-              <p style="color: gray;">Wybierz rok między 1950 a 2100</p>
-                <input v-model="date" style="width: 15em;" class="form-input" type="number" placeholder="00" min="1950" value="1960" max="2100">
-            </ul>
-          </div>
-        </div>
+
+                <div class="accordion">
+                  <input type="checkbox" id="accordion-4" name="accordion-checkbox" hidden>
+                  <label class="accordion-header" for="accordion-4">
+                    <i class="icon icon-arrow-right mr-1"></i>
+                    Wybierz rok:
+                  </label>
+                  <div class="accordion-body">
+                    <ul>
+                      <p style="color: gray;">Wybierz rok między 1950 a 2100</p>
+                      <input v-model="date" style="width: 15em;" class="form-input" type="number" placeholder="00"
+                        min="1950" value="1960" max="2100">
+                    </ul>
+                  </div>
+                </div>
               </li>
-              <li><button @click="getData()" class="btn btn-primary">Zaakceptuj</button></li>
+              <li><button @click="getDataApi()" class="btn btn-primary">Zaakceptuj</button></li>
             </ul>
           </div>
         </div>
 
       </div>
-      
-       <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
-            <div class="accordion">
+
+      <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
+        <div class="accordion">
           <input type="checkbox" id="accordion-5" name="accordion-checkbox" checked hidden>
           <label class="accordion-header" for="accordion-5">
             <i class="icon icon-arrow-right mr-1"></i>
-          Wybrane dane do wirtualizacji
+            Wybrane dane do wirtualizacji
           </label>
           <div class="accordion-body">
             <ul v-for="(chart, index) in chartDataArray" :key="index">
               <li>
-                   <div class="accordion">
-          <input type="checkbox" :id="'accordion'+index" name="accordion-checkbox" checked hidden>
-          <label class="accordion-header" :for="'accordion'+index">
-            <i class="icon icon-arrow-right mr-1"></i>
-          Dane {{index+1}}
-          </label>
-          <div class="accordion-body">
-           <ul>
-             <li style="display: flex; flex-direction: column">
-         <span>Kraj: <b>{{chart.name}}</b></span>
-          <span>Płeć: <b>{{chart.gender}}</b></span>
-          <span>Rok: <b>{{chart.date}}</b></span>
-          </li>
-           </ul>
-          </div>
-        </div>
+                <div class="accordion">
+                  <input type="checkbox" :id="'accordion'+index" name="accordion-checkbox" checked hidden>
+                  <label style="display: flex; align-items: center;" class="accordion-header" :for="'accordion'+index">
+                    <i class="icon icon-arrow-right mr-1"></i>
+                    Dane {{index+1}} <button @click="deleteData(chart)" class="ml-2 btn btn-sm btn-error">Usuń</button>
+                  </label>
+                  <div class="accordion-body">
+                    <ul>
+                      <li style="display: flex; flex-direction: column">
+                        <span>Kraj: <b>{{chart.name}}</b></span>
+                        <span>Płeć: <b>{{chart.gender}}</b></span>
+                        <span>Rok: <b>{{chart.date}}</b></span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
               </li>
             </ul>
           </div>
         </div>
       </div>
-      
 
 
-<!-- 
+
+      <!-- 
  <ul v-else style="display: flex; flex-direction: column;">
                 <li v-for="chart in chartDataArray">
     
@@ -191,14 +200,14 @@
         <h2>Spersonalizuj wygląd wykresu</h2>
       </div>
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-6">
-              <ChartContainer :type="type" :data="charts.data" :id="0" :options="charts.options" :key="keyx"/>
+        <ChartContainer :type="type" :data="charts.data" :id="0" :options="charts.options" :key="keyx" />
 
       </div>
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-6">
         <h2>Schemat kolorów</h2>
         <sketch-picker v-model="colors"> </sketch-picker>
         <swatches-picker v-model="colors"> </swatches-picker>
-<button @click="generateColor">update</button>
+        <button @click="generateColor">update</button>
       </div>
 
     </div>
@@ -293,22 +302,40 @@ export default {
       age: null,
       gender: null,
       date: null,
-      countries: [{name: 'Anglia', value: 'England'}, {name: 'Brazylia', value: 'Brazil'}, {name: 'Stany Zjednoczone', value: 'United States'}, {name: 'Portugalia', value: 'Portugal'}, {name: 'Niemcy', value: 'Germany'}, {name: 'Grecja', value: 'Greece'}, {name: 'Włochy', value: 'Italy'}]
+      countries: [{name: 'Anglia', value: 'United Kingdom'}, {name: 'Brazylia', value: 'Brazil'}, {name: 'Stany Zjednoczone', value: 'United States'}, {name: 'Portugalia', value: 'Portugal'}, {name: 'Niemcy', value: 'Germany'}, {name: 'Grecja', value: 'Greece'}, {name: 'Włochy', value: 'Italy'}]
     }
   },
   methods: {
+    useData () {
+      // for (let i = 0; i < this.chartDataArray.length; i++ ) {
+      //   this.charts.data.labels[this.chartDataArray[i]]
+      // }
+    },
+    deleteData (index) {
+      if (this.chartDataArray.length === 1) {
+        this.isValid = false
+      }
+      console.log(this.chartDataArray[index])
+      this.chartDataArray.splice(this.chartDataArray.indexOf(index), 1)
+    },
+    checkIsValid () {
+      console.log(this.chartDataArray)
+      if (this.chartDataArray.length === 0) {
+        alert('Nie wypełniłeś wszystkich danych')
+      }
+    },
     selectCountry (name, value) {
       this.countryValue = value
       this.name = name
     },
-    getData () {
+    getDataApi () {
       var xhttp = new XMLHttpRequest()
       var _this = this
       xhttp.open('GET', `http://54.72.28.201/1.0/population/${this.date}/${this.countryValue}/${this.age}/?format=json`, false)
       xhttp.onreadystatechange = function () {
         if (xhttp.readyState === 4 && xhttp.status === 200) {
-          this.xhttpData = JSON.parse(xhttp.responseText)
-          this.isValid = true
+          _this.xhttpData = JSON.parse(xhttp.responseText)
+          _this.isValid = true
           var chartData = {
             name: _this.name,
             countryValue: _this.countryValue,
@@ -320,11 +347,11 @@ export default {
           console.log(_this.chartDataArray)
           console.log(this.readyState)
         } else if (xhttp.status === 400) {
-          this.isValid = false
-          alert('Nie wypełniłeś wszystkich pól')
+          alert('Nie wypełniłeś wszystkich danych')
         }
       }
       xhttp.send()
+      console.log(this.xhttpData)
     },
     generate () {
       this.charts.data.datasets[0].data = this.randomData()
