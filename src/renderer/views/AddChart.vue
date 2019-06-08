@@ -18,12 +18,17 @@
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
           <h2>Wybierz typ wykresu</h2>
       </div>
-      <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6" @click="type='bar'">
+
+
+<div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6" v-for="(vtype, i) in types" :key="i" @click="type=vtype.name" :class="{'active': vtype.name == type}">
+          <img :src="vtype.image" class="img-responsive" alt="">
+      </div>
+      <!-- <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6" @click="type='bar'">
           <img src="static/bar.png" class="img-responsive" alt="">
       </div>
       <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6" @click="type='line'">
           <img src="static/line.png" class="img-responsive" alt="">
-      </div>
+      </div> -->
       
   </div>
   
@@ -101,6 +106,14 @@ export default {
   data () {
     return {
       type: 'line',
+      types: [{
+        name: 'line',
+        image: 'static/line.png'
+      },
+      {
+        name: 'bar',
+        image: 'static/bar.png'
+      }],
       colors: 0,
       steps: {
         type: true,
@@ -164,7 +177,7 @@ export default {
       console.log(this.charts)
       cs.addChart(this.charts)
       this.gtl().then((id) => {
-        router.push({name: 'chart', params: {id: id, type: 'line'}})
+        router.push({name: 'chart', params: {id: id, type: this.type}})
       }).catch(e => { console.log('error with promise') })
     },
     generateColor () {
@@ -253,6 +266,9 @@ export default {
   .to-right {
     justify-content: end;
   }
+}
+.active {
+  box-shadow: 0 0 10px 0 rgba(230,80,240, .3);
 }
 
 </style>
