@@ -47,8 +47,7 @@
     <div v-else-if="steps.keys" class="columns">
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
         <button @click="steps.database = true; steps.keys = false" class="btn btn-primary"> Cofnij </button>
-        <button v-if="isValid" @click="steps.keys = false; steps.customize = true"
-          class="btn btn-primary">Dalej</button>
+        <button v-if="isValid" @click="useData(); steps.keys = false; steps.customize = true" class="btn btn-primary">Dalej</button>
         <div style="cursor: pointer;" @click="checkIsValid()" v-else><button class="btn btn-primary disabled">Dalej</button>
         </div>
       </div>
@@ -57,7 +56,7 @@
       </div>
       <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
         <div class="accordion">
-          <input type="checkbox" id="accordion-1" name="accordion-checkbox" hidden>
+          <input type="checkbox" id="accordion-1" name="accordion-checkbox" checked hidden>
           <label class="accordion-header" for="accordion-1">
             <i class="icon icon-arrow-right mr-1"></i>
             Dodaj pojedyńcze dane
@@ -259,10 +258,10 @@ export default {
       loading: false,
       charts: {
         data: {
-          labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+          labels: [],
           datasets: [{
             label: '# of Votes',
-            data: [12, 19, 3, 5, 2, 3],
+            data: [],
             backgroundColor: [
               'rgba(255, 99, 132, 0.2)',
               'rgba(54, 162, 235, 0.2)',
@@ -307,9 +306,18 @@ export default {
   },
   methods: {
     useData () {
-      // for (let i = 0; i < this.chartDataArray.length; i++ ) {
-      //   this.charts.data.labels[this.chartDataArray[i]]
-      // }
+      this.charts.data.labels.length = 0
+      this.charts.data.datasets[0].data.length = 0
+      for (let i = 0; i < this.chartDataArray.length; i++) {
+        this.charts.data.labels.push(`${this.chartDataArray[i].name} (${this.chartDataArray[i].gender})`)
+        if (this.chartDataArray[i].gender === 'Mężczyźni') {
+          this.charts.data.datasets[0].data.push(this.chartDataArray[i].gotData[0].males)
+        } else if (this.chartDataArray[i].gender === 'Kobiety') {
+          this.charts.data.datasets[0].data.push(this.chartDataArray[i].gotData[0].females)
+        } else if (this.chartDataArray[i].gender === 'Wszyscy') {
+          this.charts.data.datasets[0].data.push(this.chartDataArray[i].gotData[0].total)
+        }
+      }
     },
     deleteData (index) {
       if (this.chartDataArray.length === 1) {
@@ -336,12 +344,21 @@ export default {
         if (xhttp.readyState === 4 && xhttp.status === 200) {
           _this.xhttpData = JSON.parse(xhttp.responseText)
           _this.isValid = true
+          var gender = null
+          if (_this.gender === 'male') {
+            gender = 'Mężczyźni'
+          } else if (_this.gender === 'female') {
+            gender = 'Kobiety'
+          } else if (_this.gender === 'all') {
+            gender = 'Wszyscy'
+          }
           var chartData = {
             name: _this.name,
             countryValue: _this.countryValue,
-            age: _this.age,
-            gender: _this.gender,
-            date: _this.date
+            age: parseInt(_this.age),
+            gender: gender,
+            date: parseInt(_this.date),
+            gotData: _this.xhttpData
           }
           _this.chartDataArray.push(chartData)
           console.log(_this.chartDataArray)
@@ -354,7 +371,6 @@ export default {
       console.log(this.xhttpData)
     },
     generate () {
-      this.charts.data.datasets[0].data = this.randomData()
       this.generateColor()
       console.log(this.charts)
       cs.addChart(this.charts)
