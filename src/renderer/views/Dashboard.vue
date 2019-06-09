@@ -192,9 +192,9 @@ export default {
   
 .grid-layout {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     grid-gap: 10px;
-    grid-auto-rows: minmax(180px, auto);
+    grid-auto-rows: minmax(250px, auto);
     grid-auto-flow: dense;
     padding: 10px;
     width: 100%;
@@ -207,6 +207,10 @@ export default {
     &:nth-child(3n+2) {
       grid-column-end: span 2;
       grid-row-end: span 2;
+    }
+    &:nth-child(5n+1) {
+      grid-column-end: span 1;
+      grid-row-end: span 1;
     }
     .chart-card {
       padding: 6px; 
