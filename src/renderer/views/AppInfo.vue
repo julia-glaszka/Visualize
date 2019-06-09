@@ -1,71 +1,132 @@
 <template>
     <div>
-     
-
-  <transition-group :name="'shuffleMedium'" tag="div" class="deck">
-    <div v-for="(type, i) in types" :key="type.id"
-         class="type" @click="setFirst(i)">
-      <h5>{{type.title}}</h5>
-      <img class="image" :src="type.image" :alt="type.title">
+     <h1>add labels</h1>
+    <input type="text" v-model="tempLabel"> <button @click="addLabel(tempLabel)">add</button>
+    <h3>labels:</h3>
+    <div v-for="(label, i) in labels" :key="i">
+      {{i}} . {{label}} <button @click="removeLabel(i)">X</button>
     </div>
-  </transition-group>
-</div>
 
+
+    <h3>add dataset</h3>
+    <input type="text" v-model="datasetName"> <button @click="addDataset(datasetName)">add</button>
+    <div v-for="(dataset, j) in datasets">
+      {{j}} . {{dataset.label}}
+       <input type="number" v-model="val"> <button @click="addDataToDataset(j, val)">+</button> 
+        <div v-for="(data, k) in dataset.data"> {{data}} <button @click="removeDataFromDataset(j, k)">-</button> </div>
+      </div>
+<br>
+<br>
+datasets:
+<br>
+     {{datasets}}
+
+     <br>
+<br>
+labels:
+<br>
+     {{labels}}
+   
+
+       <button @click="setChart">set chart</button>
+chart : <br><br>
+
+       {{chart}}
+
+       <button @click="showChart=!showChart"> show chart</button>
+      <div v-if="showChart" > 
+          <ChartContainer :type="chart.type" :data="chart.data" :id="0" :options="chart.options"/> 
+
+      </div>
+      
+   </div>
 
 </template>
 
 <script>
+import ChartContainer from '@/components/ChartContainer'
 export default {
   name: 'AppInfo',
+  components: {
+    ChartContainer
+  },
   data () {
     return {
-      types: [{
-        id: 0,
-        title: 'line',
-        image: 'static/line.png'
-      },
-      {
-        id: 1,
-        title: 'bar',
-        image: 'static/bar.png'
-      },
-      {
-        id: 2,
-        title: 'scatter',
-        image: 'static/scatter.png'
-      },
-      {
-        id: 3,
-        title: 'pie',
-        image: 'static/pie.png'
-      },
-      {
-        id: 4,
-        title: 'polarArea',
-        image: 'static/polarArea.png'
-      },
-      {
-        id: 5,
-        title: 'bubble',
-        image: 'static/bubble.png'
-      },
-      {
-        id: 6,
-        title: 'doughnut',
-        image: 'static/doughnut.png'
-      }]
+      showChart: false,
+      datasets: [],
+      tempLabel: '',
+      labels: [],
+      datasetName: '',
+      datasetData: [],
+      val: 0,
+      chart: {
+        type: 'line',
+        data: {
+          labels: [],
+          datasets: [{
+            label: '',
+            data: [],
+            backgroundColor: [],
+            borderColor: [],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true
+              }
+            }]
+          },
+          onClick: this.handle
+        }
+      }
     }
   },
   created () {
   },
   methods: {
-    setFirst (id) {
-      let lea = this.types
-      this.types = []
-      this.types = lea
-      let temp = this.types[0]
-      this.types[0] = this.types[id]
-      this.types[id] = temp
+    addLabel (label) {
+      this.labels.push(label)
+      this.tempLabel = ''
+    },
+    removeLabel (index) {
+      this.labels.splice(index, 1)
+    },
+    addDataset (dn) {
+      var myDataset = {}
+      myDataset.label = dn
+      myDataset.data = []
+      myDataset.backgroundColor = [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)'
+      ]
+      myDataset.borderColor = [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)'
+      ]
+      myDataset.borderWidth = 1
+      this.datasets.push(myDataset)
+      this.datasetName = ''
+    },
+    addDataToDataset (datasetId, data) {
+      this.datasets[datasetId].data.push(data)
+    },
+    removeDataFromDataset (datasetId, dataId) {
+      this.datasets[datasetId].data.splice(dataId, 1)
+    },
+    setChart () {
+      this.chart.data.labels = this.labels
+      this.chart.data.datasets = this.datasets
     }
   }
 }
