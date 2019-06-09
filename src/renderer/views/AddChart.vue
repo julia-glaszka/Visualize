@@ -32,12 +32,33 @@
     <div v-else-if="steps.database" class="columns">
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
         <button @click="steps.type = true; steps.database = false" class="btn btn-primary"> Cofnij </button>
-        <button @click="steps.database = false; steps.keys = true" class="btn btn-primary">Dalej </button>
       </div>
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
         <h2>Wybierz bazę danych</h2>
       </div>
-     
+      <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
+        <h4>Użyj gotowej bazy danych</h4>
+          <div class="accordion">
+                  <input type="checkbox" id="accordion-population" name="accordion-checkbox" checked hidden>
+                  <label class="accordion-header" for="accordion-population">
+                    <i class="icon icon-arrow-right mr-1"></i>
+                    Populacja
+                  </label>
+                  <div class="accordion-body">
+                    <ul>
+                      <li>
+                          <p style="color: gray;">Pozwala zwirtualizować dane na temat populacji ludzkiej oraz wybrać wiek, rok, płeć oraz kraj badanej grupy</p>
+                                  <button @click="steps.database = false; steps.keys = true"  class="btn btn-primary">Użyj bazy</button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+      </div>
+      <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
+        <h4>Stwórz własne dane</h4>
+        <p style="color: gray;">Za pomocą prostego interfesjsu dodaj liczbę danych, ich rodzaj oraz warstwy, które chcesz umieścic na wykresie</p>
+        <button @click="steps.database = false; steps.keysOwn = true" class="btn btn-primary">Stwórz nowe dane</button>
+      </div>
 
     </div>
 
@@ -49,7 +70,7 @@
         </div>
       </div>
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-        <h2>Wybierz dane, jakie chcesz zwizualizować</h2>
+        <h2>Wybierz dane, które chcesz zwizualizować</h2>
       </div>
       <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
         <div class="accordion">
@@ -149,7 +170,12 @@
             Wybrane dane do wirtualizacji
           </label>
           <div class="accordion-body">
-            <ul v-for="(chart, index) in chartDataArray" :key="index">
+            <ul v-if="chartDataArray.length == 0">
+              <li>
+                <p style="color: gray;">Nie dodałeś jeszcze żadnych danych</p>
+              </li>
+            </ul>
+            <ul v-else v-for="(chart, index) in chartDataArray" :key="index">
               <li>
                 <div class="accordion">
                   <input type="checkbox" :id="'accordion'+index" name="accordion-checkbox" checked hidden>
@@ -185,6 +211,105 @@
 
 
     </div>
+
+
+    <div v-else-if="steps.keysOwn" class="columns">
+      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
+        <button @click="steps.database = true; steps.keysOwn = false" class="btn btn-primary"> Cofnij </button>
+        <button v-if="isValidCollection == true && isValidDocument == true" @click="steps.keysOwn = false; steps.customize = true" class="btn btn-primary">Dalej</button>
+        <div style="cursor: pointer;" @click="checkIsValid()" v-else><button class="btn btn-primary disabled">Dalej</button>
+        </div>
+      </div>
+      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
+        <h2>Dodaj dane, które chcesz zwizualizować</h2>
+      </div>
+      <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
+        <div class="accordion">
+          <input type="checkbox" id="accordion-own1" name="accordion-checkbox" checked hidden>
+          <label class="accordion-header" for="accordion-own1">
+            <i class="icon icon-arrow-right mr-1"></i>
+            Dodaj dane
+          </label>
+          <div class="accordion-body">
+         <ul>
+           <li>
+             <input required="required" placeholder="Nazwa kolekcji" v-model="collectionName" type="text">
+             <button @click="collectionAdd()" class="btn btn-primary btn-sm">Dodaj kolekcję</button>
+           </li>
+           <li v-for="(collectionData, index) in ownChartDataArray.collections" :key="index">
+              <div class="accordion">
+                  <input type="checkbox" :id="'accordion-collection'+index" name="accordion-checkbox" checked hidden>
+                  <label style="display: flex; align-items: center;" class="accordion-header" :for="'accordion-collection'+index">
+                    <i class="icon icon-arrow-right mr-1"></i>
+                    {{collectionData.collectionName}} <button @click="deleteCollection(index)" class="ml-2 btn btn-sm btn-error">Usuń</button>
+                  </label>
+                  <div class="accordion-body">
+                    <ul>
+                                          <li>
+             <input required="required" v-model.lazy="documentName" placeholder="nazwa" style="width:25%;" type="text">
+             :
+                 <input v-model="documentValue" placeholder="wartość" style="width:25%;" type="text">
+             <button @click="documentAdd(index)" class="btn btn-primary btn-sm">Dodaj dokument</button>
+           </li>
+                    </ul>
+ 
+                    <ul>
+                      <li style="display: flex; flex-direction: column">
+                        <span style="margin: 5px 0;" v-for="(documentData, documentIndex) in collectionData.documents" :key="documentIndex"> {{documentData.documentName}}: <b>{{documentData.documentValue}}</b> <button @click="deleteDocument(index, documentIndex)" class="ml-2 btn btn-sm btn-error">Usuń</button></span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+           </li>
+         </ul>
+      
+     
+          </div>
+        </div>
+
+      </div>
+
+      <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
+        <div class="accordion">
+          <input type="checkbox" id="accordion-ownData" name="accordion-checkbox" checked hidden>
+          <label class="accordion-header" for="accordion-ownData">
+            <i class="icon icon-arrow-right mr-1"></i>
+            Wybrane dane do wirtualizacji
+          </label>
+          <div class="accordion-body">
+             <ul v-if="ownChartDataArray.collections.length == 0">
+              <li>
+                <p style="color: gray;">Nie dodałeś jeszcze żadnych danych</p>
+              </li>
+            </ul>
+            <ul v-else v-for="(collection, index) in ownChartDataArray.collections" :key="index">
+              <li>
+                <div class="accordion">
+                  <input type="checkbox" :id="'accordion-ownData'+index" name="accordion-checkbox" checked hidden>
+                  <label style="display: flex; align-items: center;" class="accordion-header" :for="'accordion-ownData'+index">
+                    <i class="icon icon-arrow-right mr-1"></i>
+                    {{collection.collectionName}} <button @click="deleteCollection(index)" class="ml-2 btn btn-sm btn-error">Usuń</button>
+                  </label>
+                  <div class="accordion-body">
+                    <ul>
+                      <li style="display: flex; flex-direction: column">
+                        <span v-for="(document, index) in collection.documents" :key="index">
+                          {{document.documentName}}: <b>{{document.documentValue}}</b>
+                          </span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+    
 
     <div v-else-if="steps.customize" class="columns">
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
@@ -239,6 +364,7 @@ export default {
       steps: {
         type: true,
         database: false,
+        keysOwn: false,
         keys: false,
         customize: false,
         finish: false
@@ -318,6 +444,8 @@ export default {
       },
       chartDataArray: [],
       isValid: false,
+      isValidCollection: false,
+      isValidDocument: false,
       countryValue: null,
       id: null,
       name: null,
@@ -325,10 +453,50 @@ export default {
       age: null,
       gender: null,
       date: null,
-      countries: [{name: 'Anglia', value: 'United Kingdom'}, {name: 'Brazylia', value: 'Brazil'}, {name: 'Stany Zjednoczone', value: 'United States'}, {name: 'Portugalia', value: 'Portugal'}, {name: 'Niemcy', value: 'Germany'}, {name: 'Grecja', value: 'Greece'}, {name: 'Włochy', value: 'Italy'}]
+      countries: [{name: 'Anglia', value: 'United Kingdom'}, {name: 'Brazylia', value: 'Brazil'}, {name: 'Stany Zjednoczone', value: 'United States'}, {name: 'Portugalia', value: 'Portugal'}, {name: 'Niemcy', value: 'Germany'}, {name: 'Grecja', value: 'Greece'}, {name: 'Włochy', value: 'Italy'}],
+      ownChartDataArray: {
+        collections: []
+      },
+      collectionName: '',
+      documentName: '',
+      documentValue: ''
     }
   },
   methods: {
+    deleteCollection (index) {
+      this.ownChartDataArray.collections.splice(index, 1)
+      if (this.ownChartDataArray.collections.length === 0) {
+        this.isValidCollection = false
+      }
+    },
+    deleteDocument (collectionIndex, index) {
+      this.ownChartDataArray.collections[collectionIndex].documents.splice(index, 1)
+      if (this.ownChartDataArray.collections[collectionIndex].documents.length === 0) {
+        this.isValidDocument = false
+      }
+    },
+    collectionAdd () {
+      if (this.collectionName.replace(/ /g, '').length === 0) {
+        alert('Pole kolekcji nie może być puste, podaj co najmniej 3 znaki')
+      } else if (this.collectionName.replace(/ /g, '').length < 3) {
+        alert('Pole kolekcji jest za krótkie, podaj co najmniej 3 znaki')
+      } else {
+        this.ownChartDataArray.collections.push({collectionName: this.collectionName, documents: []})
+        console.log(this.ownChartDataArray)
+        this.collectionName = ''
+      }
+      this.isValidCollection = true
+    },
+    documentAdd (index) {
+      if (this.documentName.replace(/ /g, '').length === 0 || this.documentValue.replace(/ /g, '').length === 0) {
+        alert('Pola dokumentu są nieprawidłowe, wartość i nazwa nie mogą być puste')
+      } else {
+        this.ownChartDataArray.collections[index].documents.push({documentName: this.documentName, documentValue: this.documentValue})
+        this.documentName = ''
+        this.documentValue = ''
+      }
+      this.isValidDocument = true
+    },
     useData () {
       this.chart.data.labels.length = 0
       this.chart.data.datasets[0].data.length = 0
