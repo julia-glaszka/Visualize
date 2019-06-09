@@ -1,207 +1,215 @@
 <template>
-
-
-  <div class="container py-2">
-    <!-- To taki generator nowych wykresow, nieskonczony na razie. 
+<div class="container py-2">
+  <!-- To taki generator nowych wykresow, nieskonczony na razie. 
   1. wybierasz typ jaki chcesz (line,bar)
   2. wybierasz baze z dostepnych (na razie nie ma ich)
   3. wybierasz keys po ktorym chcesz pobrac dane i wybierasz co chcesz zrobic z tym np suma, srednia
   4. po wygenerowaniu przekierowuje cie do /chart/:id/:type
    -->
 
-    <div v-if="steps.type" class="columns">
 
-      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
-        <router-link to="/"><button class="btn btn-primary">Wróć</button> </router-link>
-        <button @click="steps.type = false; steps.database = true" class="btn btn-primary"> Dalej </button>
-      </div>
-      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-        <h2>Wybierz typ wykresu</h2>
-      </div>
-     <transition-group :name="'shuffleMedium'" tag="div" class="deck">
-    <div v-for="(type, i) in types" :key="type.id"
-         class="type" @click="setFirst(i)">
-      <h5 :key="type.title">{{type.title}}</h5>
-      <img class="image" :src="type.image" :alt="type.title" :key="type.image">
+  <div v-if="steps.database" class="columns">
+       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
+            <router-link to="/"><button class="btn btn-primary">Wróć</button> </router-link>
     </div>
-  </transition-group>
-     
+    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
 
+      <h2>Wybierz bazę danych</h2>
     </div>
-
-    <div v-else-if="steps.database" class="columns">
-      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
-        <button @click="steps.type = true; steps.database = false" class="btn btn-primary"> Cofnij </button>
-      </div>
-      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-        <h2>Wybierz bazę danych</h2>
-      </div>
-      <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
-        <h4>Użyj gotowej bazy danych</h4>
-          <div class="accordion">
-                  <input type="checkbox" id="accordion-population" name="accordion-checkbox" checked hidden>
-                  <label class="accordion-header" for="accordion-population">
-                    <i class="icon icon-arrow-right mr-1"></i>
-                    Populacja
-                  </label>
-                  <div class="accordion-body">
-                    <ul>
-                      <li>
-                          <p style="color: gray;">Pozwala zwirtualizować dane na temat populacji ludzkiej oraz wybrać wiek, rok, płeć oraz kraj badanej grupy</p>
-                                  <button @click="steps.database = false; steps.keys = true"  class="btn btn-primary">Użyj bazy</button>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-      </div>
-      <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
-        <h4>Stwórz własne dane</h4>
-        <p style="color: gray;">Za pomocą prostego interfesjsu dodaj liczbę danych, ich rodzaj oraz warstwy, które chcesz umieścic na wykresie</p>
-        <button @click="steps.database = false; steps.keysOwn = true" class="btn btn-primary">Stwórz nowe dane</button>
-      </div>
-
-    </div>
-
-    <div v-else-if="steps.keys" class="columns">
-      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
-        <button @click="steps.database = true; steps.keys = false" class="btn btn-primary"> Cofnij </button>
-        <button v-if="isValid" @click="useData(); steps.keys = false; steps.customize = true" class="btn btn-primary">Dalej</button>
-        <div style="cursor: pointer;" @click="checkIsValid()" v-else><button class="btn btn-primary disabled">Dalej</button>
+    <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
+      <h4>Użyj gotowej bazy danych</h4>
+      <div class="accordion">
+        <input type="checkbox" id="accordion-population" name="accordion-checkbox" checked hidden>
+        <label class="accordion-header" for="accordion-population">
+          <i class="icon icon-arrow-right mr-1"></i>
+          Populacja
+        </label>
+        <div class="accordion-body">
+          <ul>
+            <li>
+              <p style="color: gray;">Pozwala zwirtualizować dane na temat populacji ludzkiej oraz wybrać wiek, rok,
+                płeć oraz kraj badanej grupy</p>
+              <button @click="steps.database = false; steps.type = true; steps.keysClicked = true" class="btn btn-primary">Użyj bazy</button>
+            </li>
+          </ul>
         </div>
       </div>
-      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-        <h2>Wybierz dane, które chcesz zwizualizować</h2>
+    </div>
+    <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
+      <h4>Stwórz własne dane</h4>
+      <p style="color: gray;">Za pomocą prostego interfesjsu dodaj liczbę danych, ich rodzaj oraz warstwy, które chcesz
+        umieścic na wykresie</p>
+      <button @click="steps.database = false; steps.type = true; steps.keysOwnClicked = true" class="btn btn-primary">Stwórz nowe dane</button>
+    </div>
+
+  </div>
+
+  
+  <div v-else-if="steps.type" class="columns">
+
+    <div v-if="steps.keysClicked == true" class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
+          <button @click="resetData(); steps.type = false; steps.database = true; steps.keysClicked = false" class="btn btn-primary"> Wróć </button>
+      <button @click="steps.type = false; steps.keys = true" class="btn btn-primary"> Dalej </button>
+    </div>
+    <div v-else-if="steps.keysOwnClicked == true" class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
+          <button @click="resetData(); steps.type = false; steps.database = true; steps.keysOwnClicked = false" class="btn btn-primary"> Wróć </button>
+      <button @click="steps.type = false; steps.keysOwn = true" class="btn btn-primary"> Dalej </button>
+    </div>
+    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
+      <h2>Wybierz typ wykresu</h2>
+    </div>
+    <transition-group :name="'shuffleMedium'" tag="div" class="deck">
+      <div v-for="(type, i) in types" :key="type.id" class="type" @click="setFirst(i)">
+        <h5 :key="type.title">{{type.title}}</h5>
+        <img class="image" :src="type.image" :alt="type.title" :key="type.image">
       </div>
-      <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
-        <div class="accordion">
-          <input type="checkbox" id="accordion-1" name="accordion-checkbox" checked hidden>
-          <label class="accordion-header" for="accordion-1">
-            <i class="icon icon-arrow-right mr-1"></i>
-            Dodaj pojedyncze dane
-          </label>
-          <div class="accordion-body">
-            <ul>
-              <li>Wybierz wiek: <br>
-                <input v-model="age" style="width: 10em;" class="slider tooltip" type="range" min="0" max="99"
-                  value="50" oninput="this.setAttribute('value', this.value);">
-              </li>
-            </ul>
-            <ul>
-              <li>
+    </transition-group>
 
-                <div class="accordion">
-                  <input type="checkbox" id="accordion-2" name="accordion-checkbox" hidden>
-                  <label class="accordion-header" for="accordion-2">
-                    <i class="icon icon-arrow-right mr-1"></i>
-                    Wybierz kraj:
-                  </label>
-                  <div class="accordion-body">
-                    <ul class="menu menu-nav">
-                      <li class="menu-item" v-for="country in countries" :key="country.value"><a
-                          v-bind:class="[countryValue == country.value ? 'country-checked' : '']"><label
-                            @click="selectCountry(country.name, country.value)"><input
-                              style="visibility: hidden; position:absolute;" name="country"
-                              type="checkbox">{{country.name}}</label></a></li>
-                    </ul>
-                  </div>
-                </div>
-              </li>
-            </ul>
-            <ul>
-              <li>
 
-                <div class="accordion">
-                  <input type="checkbox" id="accordion-3" name="accordion-checkbox" hidden>
-                  <label class="accordion-header" for="accordion-3">
-                    <i class="icon icon-arrow-right mr-1"></i>
-                    Wybierz płeć:
-                  </label>
-                  <div class="accordion-body">
-                    <ul>
-                      <div class="form-group">
-                        <label class="form-radio">
-                          <input type="radio" name="gender" value="male" v-model="gender" checked>
-                          <i class="form-icon"></i> Male
-                        </label>
-                        <label class="form-radio">
-                          <input type="radio" v-model="gender" value="female" name="gender">
-                          <i class="form-icon"></i> Female
-                        </label>
-                        <label class="form-radio">
-                          <input type="radio" v-model="gender" value="all" name="gender">
-                          <i class="form-icon"></i> Obie
-                        </label>
-                      </div>
-                    </ul>
-                  </div>
-                </div>
-              </li>
-            </ul>
-            <ul>
-              <li>
+  </div>
 
-                <div class="accordion">
-                  <input type="checkbox" id="accordion-4" name="accordion-checkbox" hidden>
-                  <label class="accordion-header" for="accordion-4">
-                    <i class="icon icon-arrow-right mr-1"></i>
-                    Wybierz rok:
-                  </label>
-                  <div class="accordion-body">
-                    <ul>
-                      <p style="color: gray;">Wybierz rok między 1950 a 2100</p>
-                      <input v-model="date" style="width: 15em;" class="form-input" type="number" placeholder="00"
-                        min="1950" value="1960" max="2100">
-                    </ul>
-                  </div>
-                </div>
-              </li>
-              <li><button @click="getDataApi()" class="btn btn-primary">Zaakceptuj</button></li>
-            </ul>
-          </div>
-        </div>
-
+  <div v-else-if="steps.keys" class="columns">
+    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
+      <button @click="steps.type = true; steps.keys = false" class="btn btn-primary"> Cofnij </button>
+      <button v-if="isValid" @click="useData(); steps.keys = false; steps.customize = true"
+        class="btn btn-primary">Dalej</button>
+      <div style="cursor: pointer;" @click="checkIsValid()" v-else><button
+          class="btn btn-primary disabled">Dalej</button>
       </div>
+    </div>
+    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
+      <h2>Wybierz dane, które chcesz zwizualizować</h2>
+    </div>
+    <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
+      <div class="accordion">
+        <input type="checkbox" id="accordion-1" name="accordion-checkbox" checked hidden>
+        <label class="accordion-header" for="accordion-1">
+          <i class="icon icon-arrow-right mr-1"></i>
+          Dodaj pojedyncze dane
+        </label>
+        <div class="accordion-body">
+          <ul>
+            <li>Wybierz wiek: <br>
+              <input v-model="age" style="width: 10em;" class="slider tooltip" type="range" min="0" max="99" value="50"
+                oninput="this.setAttribute('value', this.value);">
+            </li>
+          </ul>
+          <ul>
+            <li>
 
-      <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
-        <div class="accordion">
-          <input type="checkbox" id="accordion-5" name="accordion-checkbox" checked hidden>
-          <label class="accordion-header" for="accordion-5">
-            <i class="icon icon-arrow-right mr-1"></i>
-            Wybrane dane do wirtualizacji
-          </label>
-          <div class="accordion-body">
-            <ul v-if="chartDataArray.length == 0">
-              <li>
-                <p style="color: gray;">Nie dodałeś jeszcze żadnych danych</p>
-              </li>
-            </ul>
-            <ul v-else v-for="(chart, index) in chartDataArray" :key="index">
-              <li>
-                <div class="accordion">
-                  <input type="checkbox" :id="'accordion'+index" name="accordion-checkbox" checked hidden>
-                  <label style="display: flex; align-items: center;" class="accordion-header" :for="'accordion'+index">
-                    <i class="icon icon-arrow-right mr-1"></i>
-                    Dane {{index+1}} <button @click="deleteData(chart)" class="ml-2 btn btn-sm btn-error">Usuń</button>
-                  </label>
-                  <div class="accordion-body">
-                    <ul>
-                      <li style="display: flex; flex-direction: column">
-                        <span>Kraj: <b>{{chart.name}}</b></span>
-                        <span>Płeć: <b>{{chart.gender}}</b></span>
-                        <span>Rok: <b>{{chart.date}}</b></span>
-                      </li>
-                    </ul>
-                  </div>
+              <div class="accordion">
+                <input type="checkbox" id="accordion-2" name="accordion-checkbox" hidden>
+                <label class="accordion-header" for="accordion-2">
+                  <i class="icon icon-arrow-right mr-1"></i>
+                  Wybierz kraj:
+                </label>
+                <div class="accordion-body">
+                  <ul class="menu menu-nav">
+                    <li class="menu-item" v-for="country in countries" :key="country.value"><a
+                        v-bind:class="[countryValue == country.value ? 'country-checked' : '']"><label
+                          @click="selectCountry(country.name, country.value)"><input
+                            style="visibility: hidden; position:absolute;" name="country"
+                            type="checkbox">{{country.name}}</label></a></li>
+                  </ul>
                 </div>
-              </li>
-            </ul>
-          </div>
+              </div>
+            </li>
+          </ul>
+          <ul>
+            <li>
+
+              <div class="accordion">
+                <input type="checkbox" id="accordion-3" name="accordion-checkbox" hidden>
+                <label class="accordion-header" for="accordion-3">
+                  <i class="icon icon-arrow-right mr-1"></i>
+                  Wybierz płeć:
+                </label>
+                <div class="accordion-body">
+                  <ul>
+                    <div class="form-group">
+                      <label class="form-radio">
+                        <input type="radio" name="gender" value="male" v-model="gender" checked>
+                        <i class="form-icon"></i> Mężczyźni
+                      </label>
+                      <label class="form-radio">
+                        <input type="radio" v-model="gender" value="female" name="gender">
+                        <i class="form-icon"></i> Kobiety
+                      </label>
+                      <label class="form-radio">
+                        <input type="radio" v-model="gender" value="all" name="gender">
+                        <i class="form-icon"></i> Obie
+                      </label>
+                    </div>
+                  </ul>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <ul>
+            <li>
+
+              <div class="accordion">
+                <input type="checkbox" id="accordion-4" name="accordion-checkbox" hidden>
+                <label class="accordion-header" for="accordion-4">
+                  <i class="icon icon-arrow-right mr-1"></i>
+                  Wybierz rok:
+                </label>
+                <div class="accordion-body">
+                  <ul>
+                    <p style="color: gray;">Wybierz rok między 1950 a 2100</p>
+                    <input v-model="date" style="width: 15em;" class="form-input" type="number" placeholder="00"
+                      min="1950" value="1960" max="2100">
+                  </ul>
+                </div>
+              </div>
+            </li>
+            <li><button @click="getDataApi()" class="btn btn-primary">Zaakceptuj</button></li>
+          </ul>
         </div>
       </div>
 
+    </div>
+
+    <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
+      <div class="accordion">
+        <input type="checkbox" id="accordion-5" name="accordion-checkbox" checked hidden>
+        <label class="accordion-header" for="accordion-5">
+          <i class="icon icon-arrow-right mr-1"></i>
+          Wybrane dane do wirtualizacji
+        </label>
+        <div class="accordion-body">
+          <ul v-if="chartDataArray.length == 0">
+            <li>
+              <p style="color: gray;">Nie dodałeś jeszcze żadnych danych</p>
+            </li>
+          </ul>
+          <ul v-else v-for="(chart, index) in chartDataArray" :key="index">
+            <li>
+              <div class="accordion">
+                <input type="checkbox" :id="'accordion'+index" name="accordion-checkbox" checked hidden>
+                <label style="display: flex; align-items: center;" class="accordion-header" :for="'accordion'+index">
+                  <i class="icon icon-arrow-right mr-1"></i>
+                  Dane {{index+1}} <button @click="deleteData(chart)" class="ml-2 btn btn-sm btn-error">Usuń</button>
+                </label>
+                <div class="accordion-body">
+                  <ul>
+                    <li style="display: flex; flex-direction: column">
+                      <span>Kraj: <b>{{chart.name}}</b></span>
+                      <span>Płeć: <b>{{chart.gender}}</b></span>
+                      <span>Rok: <b>{{chart.date}}</b></span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
 
 
-      <!-- 
+
+    <!-- 
  <ul v-else style="display: flex; flex-direction: column;">
                 <li v-for="chart in chartDataArray">
     
@@ -210,138 +218,177 @@
 
 
 
+  </div>
+
+
+  <div v-else-if="steps.keysOwn" class="columns">
+    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
+      <button @click="steps.database = true; steps.keysOwn = false" class="btn btn-primary"> Cofnij </button>
+      <button v-if="isValidCollection == true && isValidDocument == true"
+        @click="useOwnData(); steps.keysOwn = false; steps.customizeOwn = true" class="btn btn-primary">Dalej</button>
+      <div style="cursor: pointer;" @click="checkIsValid()" v-else><button class="btn btn-primary disabled">Dalej</button>
+      </div>
     </div>
-
-
-    <div v-else-if="steps.keysOwn" class="columns">
-      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
-        <button @click="steps.database = true; steps.keysOwn = false" class="btn btn-primary"> Cofnij </button>
-        <button v-if="isValidCollection == true && isValidDocument == true" @click="steps.keysOwn = false; steps.customize = true" class="btn btn-primary">Dalej</button>
-        <div style="cursor: pointer;" @click="checkIsValid()" v-else><button class="btn btn-primary disabled">Dalej</button>
-        </div>
-      </div>
-      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-        <h2>Dodaj dane, które chcesz zwizualizować</h2>
-      </div>
-      <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
-        <div class="accordion">
-          <input type="checkbox" id="accordion-own1" name="accordion-checkbox" checked hidden>
-          <label class="accordion-header" for="accordion-own1">
-            <i class="icon icon-arrow-right mr-1"></i>
-            Dodaj dane
-          </label>
-          <div class="accordion-body">
-         <ul>
-           <li>
-             <input required="required" placeholder="Nazwa kolekcji" v-model="collectionName" type="text">
-             <button @click="collectionAdd()" class="btn btn-primary btn-sm">Dodaj kolekcję</button>
-           </li>
-           <li v-for="(collectionData, index) in ownChartDataArray.collections" :key="index">
+    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
+      <h2>Dodaj dane, które chcesz zwizualizować</h2>
+    </div>
+    <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
+      <div class="accordion">
+        <input type="checkbox" id="accordion-own1" name="accordion-checkbox" checked hidden>
+        <label class="accordion-header" for="accordion-own1">
+          <i class="icon icon-arrow-right mr-1"></i>
+          Dodaj dane
+        </label>
+        <div class="accordion-body">
+          <ul>
+            <li>
+              <input required="required" placeholder="Nazwa kolekcji" v-model="collectionName" type="text">
+              <button @click="collectionAdd()" class="btn btn-primary btn-sm">Dodaj kolekcję</button>
+            </li>
+            <li v-for="(collectionData, index) in ownChartDataArray.collections" :key="index">
               <div class="accordion">
-                  <input type="checkbox" :id="'accordion-collection'+index" name="accordion-checkbox" checked hidden>
-                  <label style="display: flex; align-items: center;" class="accordion-header" :for="'accordion-collection'+index">
-                    <i class="icon icon-arrow-right mr-1"></i>
-                    {{collectionData.collectionName}} <button @click="deleteCollection(index)" class="ml-2 btn btn-sm btn-error">Usuń</button>
-                  </label>
-                  <div class="accordion-body">
-                    <ul>
-                                          <li>
-             <input required="required" v-model.lazy="documentName" placeholder="nazwa" style="width:25%;" type="text">
-             :
-                 <input v-model="documentValue" placeholder="wartość" style="width:25%;" type="text">
-             <button @click="documentAdd(index)" class="btn btn-primary btn-sm">Dodaj dokument</button>
-           </li>
-                    </ul>
- 
-                    <ul>
-                      <li style="display: flex; flex-direction: column">
-                        <span style="margin: 5px 0;" v-for="(documentData, documentIndex) in collectionData.documents" :key="documentIndex"> {{documentData.documentName}}: <b>{{documentData.documentValue}}</b> <button @click="deleteDocument(index, documentIndex)" class="ml-2 btn btn-sm btn-error">Usuń</button></span>
-                      </li>
-                    </ul>
-                  </div>
+                <input type="checkbox" :id="'accordion-collection'+index" name="accordion-checkbox" checked hidden>
+                <label style="display: flex; align-items: center;" class="accordion-header"
+                  :for="'accordion-collection'+index">
+                  <i class="icon icon-arrow-right mr-1"></i>
+                  {{collectionData.collectionName}} <button @click="deleteCollection(index)"
+                    class="ml-2 btn btn-sm btn-error">Usuń</button>
+                </label>
+                <div class="accordion-body">
+                  <ul>
+                    <li>
+                      <input v-model.lazy="documentName" placeholder="nazwa" style="width:25%;"
+                        type="text">
+                      :
+                      <input v-model="documentValue" placeholder="wartość" style="width:25%;" type="text">
+                      <button @click="documentAdd(index)" class="btn btn-primary btn-sm">Dodaj dokument</button>
+                    </li>
+                  </ul>
+
+                  <ul>
+                    <li style="display: flex; flex-direction: column">
+                      <span style="margin: 5px 0;" v-for="(documentData, documentIndex) in collectionData.documents"
+                        :key="documentIndex"> {{documentData.documentName}}: <b>{{documentData.documentValue}}</b>
+                        <button @click="deleteDocument(index, documentIndex)"
+                          class="ml-2 btn btn-sm btn-error">Usuń</button></span>
+                    </li>
+                  </ul>
                 </div>
-           </li>
-         </ul>
+              </div>
+            </li>
+          </ul>
+
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
+      <div class="accordion">
+        <input type="checkbox" id="accordion-ownData" name="accordion-checkbox" checked hidden>
+        <label class="accordion-header" for="accordion-ownData">
+          <i class="icon icon-arrow-right mr-1"></i>
+          Wybrane dane do wirtualizacji
+        </label>
+        <div class="accordion-body">
+          <ul v-if="ownChartDataArray.collections.length == 0">
+            <li>
+              <p style="color: gray;">Nie dodałeś jeszcze żadnych danych</p>
+            </li>
+          </ul>
+          <ul v-else v-for="(collection, index) in ownChartDataArray.collections" :key="index">
+            <li>
+              <div class="accordion">
+                <input type="checkbox" :id="'accordion-ownData'+index" name="accordion-checkbox" checked hidden>
+                <label style="display: flex; align-items: center;" class="accordion-header"
+                  :for="'accordion-ownData'+index">
+                  <i class="icon icon-arrow-right mr-1"></i>
+                  {{collection.collectionName}} <button @click="deleteCollection(index)"
+                    class="ml-2 btn btn-sm btn-error">Usuń</button>
+                </label>
+                <div class="accordion-body">
+                  <ul>
+                    <li style="display: flex; flex-direction: column">
+                      <span v-for="(document, index) in collection.documents" :key="index">
+                        {{document.documentName}}: <b>{{document.documentValue}}</b>
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+
+
+  <div v-else-if="steps.customize" class="columns">
+    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
+
+
       
-     
-          </div>
-        </div>
-
-      </div>
-
-      <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
-        <div class="accordion">
-          <input type="checkbox" id="accordion-ownData" name="accordion-checkbox" checked hidden>
-          <label class="accordion-header" for="accordion-ownData">
-            <i class="icon icon-arrow-right mr-1"></i>
-            Wybrane dane do wirtualizacji
-          </label>
-          <div class="accordion-body">
-             <ul v-if="ownChartDataArray.collections.length == 0">
-              <li>
-                <p style="color: gray;">Nie dodałeś jeszcze żadnych danych</p>
-              </li>
-            </ul>
-            <ul v-else v-for="(collection, index) in ownChartDataArray.collections" :key="index">
-              <li>
-                <div class="accordion">
-                  <input type="checkbox" :id="'accordion-ownData'+index" name="accordion-checkbox" checked hidden>
-                  <label style="display: flex; align-items: center;" class="accordion-header" :for="'accordion-ownData'+index">
-                    <i class="icon icon-arrow-right mr-1"></i>
-                    {{collection.collectionName}} <button @click="deleteCollection(index)" class="ml-2 btn btn-sm btn-error">Usuń</button>
-                  </label>
-                  <div class="accordion-body">
-                    <ul>
-                      <li style="display: flex; flex-direction: column">
-                        <span v-for="(document, index) in collection.documents" :key="index">
-                          {{document.documentName}}: <b>{{document.documentValue}}</b>
-                          </span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
+      <button @click="steps.keys = true; steps.customize = false" class="btn btn-primary"> Cofnij </button>
+      <button @click="steps.customize = false; steps.finish = true" class="btn btn-primary"
+        :disabled="hasColor ? false : true">Dalej </button>
+    </div>
+    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
+      <h2>Spersonalizuj wygląd wykresu</h2>
+    </div>
+    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-6">
+      <ChartContainer :type="chart.type" :data="chart.data" :id="0" :options="chart.options" :key="keyx" />
 
     </div>
+    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-6">
+      <h2>Schemat kolorów</h2>
+      <sketch-picker v-model="colors"> </sketch-picker>
+      <swatches-picker v-model="colors"> </swatches-picker>
+      <button @click="generateColor">update</button>
+    </div>
 
-    
+  </div>
 
-    <div v-else-if="steps.customize" class="columns">
-      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
-        <button @click="steps.keys = true; steps.customize = false" class="btn btn-primary"> Cofnij </button>
-        <button @click="steps.customize = false; steps.finish = true" class="btn btn-primary"
-          :disabled="hasColor ? false : true">Dalej </button>
-      </div>
-      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-        <h2>Spersonalizuj wygląd wykresu</h2>
-      </div>
-      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-6">
-        <ChartContainer :type="chart.type" :data="chart.data" :id="0" :options="chart.options" :key="keyx" />
 
-      </div>
-      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-6">
-        <h2>Schemat kolorów</h2>
-        <sketch-picker v-model="colors"> </sketch-picker>
-        <swatches-picker v-model="colors"> </swatches-picker>
-        <button @click="generateColor">update</button>
-      </div>
+  <div v-else-if="steps.customizeOwn" class="columns">
+    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
+
+
+      
+      <button @click="steps.keysOwn = true; steps.customizeOwn = false" class="btn btn-primary"> Cofnij </button>
+      <button @click="steps.customizeOwn = false; steps.finish = true" class="btn btn-primary"
+        :disabled="hasColor ? false : true">Dalej </button>
+    </div>
+    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
+      <h2>Spersonalizuj wygląd wykresu</h2>
+    </div>
+    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-6">
+      <ChartContainer :type="chart.type" :data="chart.data" :id="0" :options="chart.options" :key="keyx" />
 
     </div>
-    <div v-else class="columns">
-      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
-        <button @click="steps.success = false; steps.customize = true" class="btn btn-primary"> Cofnij </button>
-        <button @click="generate" class="btn btn-primary">Wygeneruj</button>
-      </div>
-      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-        <h2>Sukces! Przejdź do swojego wykresu i zobacz efekt!</h2>
-      </div>
+    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-6">
+      <h2>Schemat kolorów</h2>
+      <sketch-picker v-model="colors"> </sketch-picker>
+      <swatches-picker v-model="colors"> </swatches-picker>
+      <button @click="generateColor">update</button>
+    </div>
+
+  </div>
+
+  <div v-else class="columns">
+    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
+      <button @click="steps.success = false; steps.customize = true" class="btn btn-primary"> Cofnij </button>
+      <button @click="generate" class="btn btn-primary">Wygeneruj</button>
+    </div>
+    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
+      <h2>Sukces! Przejdź do swojego wykresu i zobacz efekt!</h2>
     </div>
   </div>
+</div>
 
 </template>
 <script>
@@ -362,10 +409,13 @@ export default {
       keyx: 11,
       colors: 0,
       steps: {
-        type: true,
-        database: false,
+        type: false,
+        database: true,
         keysOwn: false,
+        keysOwnClicked: false,
+        customizeOwn: false,
         keys: false,
+        keysClicked: false,
         customize: false,
         finish: false
       },
@@ -497,6 +547,16 @@ export default {
       }
       this.isValidDocument = true
     },
+    useOwnData () {
+      this.chart.data.labels.length = 0
+      this.chart.data.datasets[0].data.length = 0
+      for (let i = 0; i < this.ownChartDataArray.collections.length; i++) {
+        for (let j = 0; j < this.ownChartDataArray.collections[i].documents.length; j++) {
+          this.chart.data.labels.push(this.ownChartDataArray.collections[i].documents[j].documentName)
+          this.chart.data.datasets[0].data.push(this.ownChartDataArray.collections[i].documents[j].documentValue)
+        }
+      }
+    },
     useData () {
       this.chart.data.labels.length = 0
       this.chart.data.datasets[0].data.length = 0
@@ -510,6 +570,10 @@ export default {
           this.chart.data.datasets[0].data.push(this.chartDataArray[i].gotData[0].total)
         }
       }
+    },
+    resetData () {
+      this.chart.data.labels.length = 0
+      this.chart.data.datasets[0].data.length = 0
     },
     deleteData (index) {
       if (this.chartDataArray.length === 1) {
