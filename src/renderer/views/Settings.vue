@@ -1,14 +1,17 @@
 <template>
-    <div class="columns">
-      <div class="column col-xs-12">
-         <router-link to="/" >Wróć</router-link>
-        <h3>Ustawienia Aplikacji</h3>
-
+<div class="container py-2">
+  <div class="columns">
+      <div class="column col-xs-12 ">
+        <router-link to="/" class="btn btn-primary">Wróć</router-link>
+        <br>
+        <br>
+        <h2>Ustawienia Aplikacji</h2>
+        <br>
+        <br>
         <button class="btn btn-warning" @click="destroyDb">Usuń bazę danych</button>
-      </div>
-       
-        <!-- napisac jakies ustawienia zapisywane w LocalStorage, np zmiana koloru motywu aplikacji na ciemny itd -->
+      </div>       
     </div>
+</div>
 </template>
 <script>
 import cs from '@/api/CrudService'

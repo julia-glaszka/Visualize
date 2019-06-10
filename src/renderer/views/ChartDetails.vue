@@ -1,42 +1,26 @@
 <template>
+<div class="container py-2">
   <div class="columns">
-    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi"> <router-link to="/">back</router-link></div>
-    <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6"> <div v-if="isLoading">Loading ....</div>
-    <div v-if="isLoaded">
-      <ChartContainer :type="$route.params.type" :data="charts[0].data" :id="charts[0].id" :options="charts[0].options"/>
-      <div>
-        <!-- 
-          wybor typu chartu
-          <select name="type" v-model="type">
-          <option disabled value="">Select Type</option>
-          <option value="line">line</option>
-          <option value="bar">bar</option>
-        </select>  -->
-        <!-- trzeba tu te guziczki jakos podczepic pod data() i móc updateować chart w bazie za pomoca  cs.updateChart(id, newChartData) -->
-        <!-- Label: <input type="text" v-model="charts[0].data.datasets[0].label">
-        Url of database: <input type="url" v-model="db">
-        <input type="checkbox" name="options" id="" v-model="charts[0].options.responsive"> responsive
-        <input type="checkbox" name="options" id="" v-model="charts[0].options.maintainAspectRatio"> maintainAspectRatio
-        <input type="checkbox" name="options" id="" v-model="charts[0].options.scales.yAxes[0].ticks"> Begin at zero
-        <input type="checkbox" name="options" id="" v-model="charts[0].options.scales.yAxes[0].legend"> Display Legend 
-        backgroundColor :
-       <input type="color" name="background" id="" v-model="charts[0].data.datasets[0].backgroundColor[selectedData.index]">      
-        borderColor :
-        <input type="color" name="border" id="" v-model="charts[0].data.datasets[0].borderColor[selectedData.index]">  
-        <input type="button" value="" @click="reset">  -->
-
-        <!-- koniec guziczkow -->
+    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi"> 
+      <router-link to="/" class="btn btn-primary">Wróć</router-link>
     </div>
-
-      </div></div>
-    <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">pszyciski</div>
     
-   
-
+    <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6"> 
+      <div v-if="isLoading">Ładowanie ....</div>
+      <div v-if="isLoaded">
+          <ChartContainer :type="$route.params.type" :data="charts[0].data" :id="charts[0].id" :options="charts[0].options"/>
+      </div>
     </div>
+
+    <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
+      <div class="btn btn-error" @click='deleteChart'>Usuń wykres</div>
+    </div>
+  </div>
+</div>
 </template>
 <script>
 import cs from '@/api/CrudService'
+import router from '@/router/router'
 import ChartContainer from '@/components/ChartContainer'
 export default {
   name: 'ChartDetails',
@@ -60,6 +44,11 @@ export default {
     }
   },
   methods: {
+    deleteChart () {
+      cs.deleteChart(parseInt(this.$route.params.id))
+      alert('Pomyślnie usunięto wykres!')
+      router.push({ path: '/' })
+    },
     handle (point, event) {
       // handle clicked point on chart
       if (!event[0]._index) {

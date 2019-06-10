@@ -21,7 +21,7 @@
         </div>
           <div  v-else-if="type=='scatter'">
             <ScatterChart :chartData="data" :options="options"/>
-        </div>        <div v-else> brakuje czegos xd</div>
+        </div>        <div v-else> Wystąpił problem przy generowaniu wykresu. Spróbuj ponownie. </div>
        
     </div>
 </template>

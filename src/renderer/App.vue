@@ -156,7 +156,9 @@ h2 {
 
 .navleft {
   background: rgb(248,250,250);
-  min-height: 90vh;
+  @media only screen and (min-width: 50rem) {
+    min-height: 90vh;
+  }
   font-size: 0.8em;
   svg {
     path {

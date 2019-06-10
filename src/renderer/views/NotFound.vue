@@ -1,7 +1,9 @@
 <template>
     <div>
-        <router-link to="/">back</router-link>
-        Error 404: Not found :(
+        <router-link to="/" class="btn btn-primary">Wróć</router-link>
+        <h1>
+          Error 404. Nie znaleziono strony. :( 
+        </h1>
     </div>
 </template>
 

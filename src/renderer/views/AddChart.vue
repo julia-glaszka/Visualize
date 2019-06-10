@@ -9,12 +9,14 @@
 
 
   <div v-if="steps.database" class="columns">
-       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
+    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
             <router-link to="/"><button class="btn btn-primary">Wróć</button> </router-link>
     </div>
     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-
-      <h2>Wybierz bazę danych</h2>
+      <br>
+      <h1 class="text-dark">Wybierz bazę danych</h1>
+      <br>
+      <br>
     </div>
     <div class="column col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-6">
       <h4>Użyj gotowej bazy danych</h4>
@@ -60,7 +62,7 @@
     </div>
     <transition-group :name="'shuffleMedium'" tag="div" class="deck">
       <div v-for="(type, i) in types" :key="type.id" class="type" @click="setFirst(i)">
-        <h5 :key="type.title">{{type.title}}</h5>
+        <h5 :key="type.title">{{type.human}}</h5>
         <img class="image" :src="type.image" :alt="type.title" :key="type.image">
       </div>
     </transition-group>
@@ -345,10 +347,11 @@
 
     </div>
     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-6">
-      <h2>Schemat kolorów</h2>
-      <sketch-picker v-model="colors"> </sketch-picker>
-      <swatches-picker v-model="colors"> </swatches-picker>
-      <button @click="generateColor">update</button>
+       <button @click="generateColor" class="btn btn-primary">Sprawdź Kolor</button>
+      <h2>Wybierz schemat kolorów</h2>
+      <button class="button-col" :style="{background: colors.hex }" @click="opencolor=!opencolor"></button>
+      <sketch-picker v-model="colors" v-if="opencolor"> </sketch-picker>
+     
     </div>
 
   </div>
@@ -392,7 +395,7 @@
 
 </template>
 <script>
-import { Sketch, Swatches } from 'vue-color'
+import { Sketch } from 'vue-color'
 import cs from '@/api/CrudService'
 import ChartContainer from '@/components/ChartContainer'
 import da from '@/api/DataAnalyze'
@@ -401,11 +404,11 @@ export default {
   name: 'AddChart',
   components: {
     'sketch-picker': Sketch,
-    'swatches-picker': Swatches,
     ChartContainer
   },
   data () {
     return {
+      opencolor: false,
       keyx: 11,
       colors: 0,
       steps: {
@@ -421,36 +424,31 @@ export default {
       },
       types: [{
         id: 0,
+        human: 'Wykres Liniowy',
         title: 'line',
         image: 'static/line.png'
       },
       {
         id: 1,
+        human: 'Wykres Słupkowy',
         title: 'bar',
         image: 'static/bar.png'
       },
       {
         id: 2,
-        title: 'scatter',
-        image: 'static/scatter.png'
-      },
-      {
-        id: 3,
+        human: 'Wykres Kołowy',
         title: 'pie',
         image: 'static/pie.png'
       },
       {
-        id: 4,
+        id: 3,
+        human: 'Obszar Polarny',
         title: 'polarArea',
         image: 'static/polarArea.png'
       },
       {
-        id: 5,
-        title: 'bubble',
-        image: 'static/bubble.png'
-      },
-      {
-        id: 6,
+        id: 4,
+        human: 'Pączek',
         title: 'doughnut',
         image: 'static/doughnut.png'
       }],
@@ -757,7 +755,7 @@ export default {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  background-color: white;
+  background-color: transparent;
   flex-direction: column;
   &:first-of-type {
     width: 50%;
@@ -794,5 +792,12 @@ export default {
 .fade-enter-to, .fade-leave {
   width: 100%;
  height: 300px;
+}
+
+.button-col {
+  width: 2em;
+   height: 2em;
+   border: 0;
+   border-radius: 100%;
 }
 </style>

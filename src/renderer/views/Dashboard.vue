@@ -1,59 +1,20 @@
 <template>
 <div class="container view-content">
-  
-      <div class="column col-12 section-title">
+    <div class="column col-12 section-title">
         <h1 class="text-dark">Twoje Wykresy</h1>
         <p class="text-gray">Zbiór wszystkich dotychczas stworzonych wykresów.</p>
-      
-      </div>
+    </div>
     <div v-if="isLoading" class="columns column">loading ....</div>
-    
     <div v-if="isLoaded" class="columns column">
-      
-        <!-- jest takie cos jak vuedevtools w tym okienku co ci sie wyswietla, 
-        odpalasz zwykle devtoolsy jesli sie same nie wlaczyly (ctrl + shift + i) 
-        masz takie zakladki jak elements, console itd i znalezc trzeba "vue" , 
-        tam sie wszystko pokazuje jak wygladaja dane aktualnie -->
-
-        <!-- zeby zobaczyc baze danych aplikacji to tez devtoolsy 
-        ale zakladka application -> indexeddb ->nazwa  -->
-        <!--
-          TU JEST TROCHE PRZYKLADOW JAK WYWOLYWAC FUNKCJE ITD, ODKOMENTUJ I ZOBACZ JAK DZIALA
-           <router-link to="/add">add new chart</router-link> -->
-
-  <!-- <router-link to="/chart/1/line">chartDetails 1 </router-link>
-  <router-link to="/chart/3/bar">chartDetails 3</router-link>
-  <router-link to="/chart/4/line">chartDetails 4</router-link>
-  <router-link to="/chart/18/bar">chartDetails 18</router-link> -->
-
-    
-    <!-- <button @click="readChart(3)" class="btn btn-primary">readChart(3)</button> <br>
-    <button @click="updateChart()" class="btn btn-primary">updateChart()</button>  <br>
-readed: {{JSON.stringify(read)}} <br/>
- <button @click="getAllCharts()" class="btn btn-primary">getAllCharts()</button><br>
- -->
-
- <!-- <button @click="destroyDb()" class="btn btn-primary">destroyDb()</button><br>
- <button @click="readChart(1)" class="btn btn-primary">readChart(1)</button><br>
- <button @click="deleteChart(2)" class="btn btn-primary">deleteChart(2)</button><br>  -->
-    
-      <div class="grid-layout">
-        <div class="grid-item" v-for="(chartx, i) in charts" :key="i">
- <div class="chart-card"> 
-      <!-- <button @click="deleteChart(i)">delete chart {{i}}</button> -->
-      <router-link :to="`/chart/${chartx.id}/${chartx.type}`"> <ChartContainer :type="chartx.type" :data="chartx.data" :id="chartx.id" :options="chartx.options"/> </router-link>
-    </div>
+        <div class="grid-layout">
+          <div class="grid-item" v-for="(chartx, i) in charts" :key="i">
+              <div class="chart-card"> 
+                  <router-link :to="`/chart/${chartx.id}/${chartx.type}`"> <ChartContainer :type="chartx.type" :data="chartx.data" :id="chartx.id" :options="chartx.options"/> </router-link>
+              </div>
+          </div>
         </div>
- 
-      </div>
-  
-
-<!-- :class="`column col-xs-12 col-sm-12 col-md-12 col-lg-${scheme[i%scheme.length]} col-xl-${scheme[i%scheme.length]} col-${scheme[i%scheme.length]}`" -->
-    
     </div>
-
   </div>
-  
 </template>
 
 <script>
@@ -231,6 +192,9 @@ export default {
 .container {
   padding-left: 0;
   padding-right: 0;
+  @media screen and (min-width: 50rem) {
+    min-height: 90vh;
+  }
 }
 .section-title {
    padding-top: 3rem;
