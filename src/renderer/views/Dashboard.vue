@@ -6,7 +6,6 @@
     </div>
     <div v-if="isLoading" class="columns column">loading ....</div>
     <div v-if="isLoaded" class="columns column">
-      <router-link to="/aaa"> 404</router-link>
         <div class="grid-layout">
           <div class="grid-item" v-for="(chartx, i) in charts" :key="i">
               <div class="chart-card"> 
@@ -26,7 +25,6 @@ export default {
   components: { ChartContainer },
   data () {
     return {
-      scheme: [5, 3, 4, 4, 4, 4, 6, 6, 2, 4, 6],
       charts: [],
       read: {},
       isLoading: false,
