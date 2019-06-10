@@ -349,8 +349,12 @@
     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-6">
        <button @click="generateColor" class="btn btn-primary">Sprawdź Kolor</button>
       <h2>Wybierz schemat kolorów</h2>
-      <button class="button-col" :style="{background: colors.hex }" @click="opencolor=!opencolor"></button>
-      <sketch-picker v-model="colors" v-if="opencolor"> </sketch-picker>
+     <sketch-picker v-model="colors" v-if="openModal" @input="generateColor"> </sketch-picker>
+       {{activeInput}}
+       <div v-for="(dataset, i) in chart.data.datasets">
+         <button :style="{background: dataset.backgroundColor[0]}" @click="activeInput = i; openModal = !openModal"></button>
+       </div>
+       {{color}}
      
     </div>
 
@@ -376,9 +380,12 @@
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-6">
        <button @click="generateColor" class="btn btn-primary">Sprawdź Kolor</button>
       <h2>Wybierz schemat kolorów</h2>
-      <button class="button-col" :style="{background: colors.hex }" @click="opencolor=!opencolor"></button>
-      <sketch-picker v-model="colors" v-if="opencolor"> </sketch-picker>
-     
+      <sketch-picker v-model="colors" v-if="openModal" @input="generateColor"> </sketch-picker>
+       {{activeInput}}
+       <div v-for="(dataset, i) in chart.data.datasets">
+         <button :style="{background: dataset.backgroundColor[0]}" @click="activeInput = i; openModal = !openModal"></button>
+       </div>
+       {{color}}
     </div>
 
   </div>
@@ -408,9 +415,12 @@ export default {
   },
   data () {
     return {
+      colors: '',
+      color: '',
+      keyx: 10,
+      openModal: false,
+      activeInput: 0,
       opencolor: false,
-      keyx: 11,
-      colors: 0,
       steps: {
         type: false,
         database: true,
@@ -480,8 +490,7 @@ export default {
                 beginAtZero: true
               }
             }]
-          },
-          onClick: this.handle
+          }
         }
       },
       chartDataArray: [],
@@ -674,8 +683,8 @@ export default {
         }
         color.push('rgba(' + colorObj.r + ', ' + colorObj.g + ', ' + colorObj.b + ', ' + Math.decimal(a, 2) + ')')
       }
-      this.chart.data.datasets[0].backgroundColor = color
-      this.chart.data.datasets[0].borderColor = color
+      this.chart.data.datasets[this.activeInput].backgroundColor = color
+      this.chart.data.datasets[this.activeInput].borderColor = color
       this.keyx++
     },
     randomData () {

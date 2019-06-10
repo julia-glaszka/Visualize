@@ -62,6 +62,5 @@ export default {
     PolarAreaChart,
     ScatterChart
   }
-
 }
 </script>
