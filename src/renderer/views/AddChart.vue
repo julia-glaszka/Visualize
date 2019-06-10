@@ -442,12 +442,6 @@ export default {
       },
       {
         id: 3,
-        human: 'Obszar Polarny',
-        title: 'polarArea',
-        image: 'static/polarArea.png'
-      },
-      {
-        id: 4,
         human: 'Pączek',
         title: 'doughnut',
         image: 'static/doughnut.png'
