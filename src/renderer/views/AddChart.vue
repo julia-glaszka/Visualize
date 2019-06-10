@@ -245,7 +245,7 @@
           <ul>
             <li>
               <input required="required" placeholder="Nazwa kolekcji" v-model="collectionName" type="text">
-              <button @click="collectionAdd()" class="btn btn-primary btn-sm">Dodaj kolekcję</button>
+              <button @click="collectionAdd()" class="btn btn-primary btn-sm">Dodaj warstwę</button>
             </li>
             <li v-for="(collectionData, index) in ownChartDataArray.collections" :key="index">
               <div class="accordion">
@@ -263,7 +263,7 @@
                         type="text">
                       :
                       <input v-model="documentValue" placeholder="wartość" style="width:25%;" type="text">
-                      <button @click="documentAdd(index)" class="btn btn-primary btn-sm">Dodaj dokument</button>
+                      <button @click="documentAdd(index)" class="btn btn-primary btn-sm">Dodaj informację</button>
                     </li>
                   </ul>
 
@@ -519,9 +519,9 @@ export default {
     },
     collectionAdd () {
       if (this.collectionName.replace(/ /g, '').length === 0) {
-        alert('Pole kolekcji nie może być puste, podaj co najmniej 3 znaki')
+        alert('Pole warstwy nie może być puste, podaj co najmniej 3 znaki')
       } else if (this.collectionName.replace(/ /g, '').length < 3) {
-        alert('Pole kolekcji jest za krótkie, podaj co najmniej 3 znaki')
+        alert('Pole warstwy jest za krótkie, podaj co najmniej 3 znaki')
       } else {
         this.ownChartDataArray.collections.push({collectionName: this.collectionName, documents: []})
         console.log(this.ownChartDataArray)
@@ -531,7 +531,7 @@ export default {
     },
     documentAdd (index) {
       if (this.documentName.replace(/ /g, '').length === 0 || this.documentValue.replace(/ /g, '').length === 0) {
-        alert('Pola dokumentu są nieprawidłowe, wartość i nazwa nie mogą być puste')
+        alert('Pola informacji są nieprawidłowe, wartość i nazwa nie mogą być puste')
       } else {
         this.ownChartDataArray.collections[index].documents.push({documentName: this.documentName, documentValue: this.documentValue})
         this.documentName = ''
@@ -546,7 +546,9 @@ export default {
       this.chart.data.datasets.length = 0
       for (let i = 0; i < this.ownChartDataArray.collections.length; i++) {
         for (let j = 0; j < this.ownChartDataArray.collections[i].documents.length; j++) {
-          if (this.chart.data.labels[j] !== this.ownChartDataArray.collections[i].documents[j].documentName) {
+          if (this.chart.data.labels[j] === this.ownChartDataArray.collections[i].documents[j].documentName) {
+            console.log('Masno')
+          } else {
             this.chart.data.labels.push(this.ownChartDataArray.collections[i].documents[j].documentName)
           }
           data.push(this.ownChartDataArray.collections[i].documents[j].documentValue)
