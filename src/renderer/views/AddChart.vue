@@ -347,12 +347,12 @@
 
     </div>
     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-6">
-       <button @click="generateColor" class="btn btn-primary">Sprawdź Kolor</button>
       <h2>Wybierz schemat kolorów</h2>
      <sketch-picker v-model="colors" v-if="openModal" @input="generateColor"> </sketch-picker>
        {{activeInput}}
        <div v-for="(dataset, i) in chart.data.datasets">
-         <button :style="{background: dataset.backgroundColor[0]}" @click="activeInput = i; openModal = !openModal"></button>
+         <h5>Kolor {{i}}</h5>
+         <button :style="{background: dataset.backgroundColor[0]}" @click="activeInput = i; openModal = !openModal; hasColor=true" class="button-col"></button>
        </div>
        {{color}}
      
@@ -378,12 +378,12 @@
 
     </div>
       <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-6">
-       <button @click="generateColor" class="btn btn-primary">Sprawdź Kolor</button>
       <h2>Wybierz schemat kolorów</h2>
       <sketch-picker v-model="colors" v-if="openModal" @input="generateColor"> </sketch-picker>
        {{activeInput}}
        <div v-for="(dataset, i) in chart.data.datasets">
-         <button :style="{background: dataset.backgroundColor[0]}" @click="activeInput = i; openModal = !openModal"></button>
+             <h5>Kolor {{i}}</h5>
+         <button :style="{background: dataset.backgroundColor[0]}" @click="activeInput = i; openModal = !openModal; hasColor=true" class="button-col"></button>
        </div>
        {{color}}
     </div>
