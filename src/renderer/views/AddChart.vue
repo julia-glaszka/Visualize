@@ -373,11 +373,12 @@
       <ChartContainer :type="chart.type" :data="chart.data" :id="0" :options="chart.options" :key="keyx" />
 
     </div>
-    <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-6">
-      <h2>Schemat kolorów</h2>
-      <sketch-picker v-model="colors"> </sketch-picker>
-      <swatches-picker v-model="colors"> </swatches-picker>
-      <button @click="generateColor">update</button>
+      <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-6">
+       <button @click="generateColor" class="btn btn-primary">Sprawdź Kolor</button>
+      <h2>Wybierz schemat kolorów</h2>
+      <button class="button-col" :style="{background: colors.hex }" @click="opencolor=!opencolor"></button>
+      <sketch-picker v-model="colors" v-if="opencolor"> </sketch-picker>
+     
     </div>
 
   </div>
@@ -546,13 +547,40 @@ export default {
       this.isValidDocument = true
     },
     useOwnData () {
+      var data = []
+      var slice
       this.chart.data.labels.length = 0
-      this.chart.data.datasets[0].data.length = 0
+      this.chart.data.datasets.length = 0
       for (let i = 0; i < this.ownChartDataArray.collections.length; i++) {
         for (let j = 0; j < this.ownChartDataArray.collections[i].documents.length; j++) {
-          this.chart.data.labels.push(this.ownChartDataArray.collections[i].documents[j].documentName)
-          this.chart.data.datasets[0].data.push(this.ownChartDataArray.collections[i].documents[j].documentValue)
+          if (this.chart.data.labels[j] !== this.ownChartDataArray.collections[i].documents[j].documentName) {
+            this.chart.data.labels.push(this.ownChartDataArray.collections[i].documents[j].documentName)
+          }
+          data.push(this.ownChartDataArray.collections[i].documents[j].documentValue)
         }
+        slice = data.splice(0, this.ownChartDataArray.collections[i].documents.length)
+        this.chart.data.datasets.push({
+          label: this.ownChartDataArray.collections[i].collectionName,
+          data: slice,
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)'
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+          ],
+          borderWidth: 1
+        })
+        console.log(slice)
       }
     },
     useData () {
