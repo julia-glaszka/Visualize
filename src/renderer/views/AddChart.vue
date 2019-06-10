@@ -399,7 +399,6 @@
 import { Sketch } from 'vue-color'
 import cs from '@/api/CrudService'
 import ChartContainer from '@/components/ChartContainer'
-import da from '@/api/DataAnalyze'
 import router from '@/router/router'
 export default {
   name: 'AddChart',
@@ -691,12 +690,6 @@ export default {
         arr.push(Math.random(i))
       }
       return arr
-    },
-    analyze () {
-      this.summary = da.sum(this.chart.data.datasets[0].data)
-      this.average = da.avg(this.chart.data.datasets[0].data)
-      this.maximum = da.maxm(this.chart.data.datasets[0].data)
-      this.minimum = da.minm(this.chart.data.datasets[0].data)
     },
     gtl () {
       return new Promise((resolve, reject) => {
