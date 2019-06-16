@@ -10,7 +10,7 @@
 
   <div v-if="steps.database" class="columns">
     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-            <router-link to="/"><button class="btn btn-primary">Wróć</button> </router-link>
+            <router-link to="/"><button class="btn btn-primary"> Cofnij </button> </router-link>
     </div>
     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
       <br>
@@ -50,11 +50,11 @@
   <div v-else-if="steps.type" class="columns">
 
     <div v-if="steps.keysClicked == true" class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
-          <button @click="resetData(); steps.type = false; steps.database = true; steps.keysClicked = false" class="btn btn-primary"> Wróć </button>
+          <button @click="resetData(); steps.type = false; steps.database = true; steps.keysClicked = false" class="btn btn-primary"> Cofnij </button>
       <button @click="steps.type = false; steps.keys = true" class="btn btn-primary"> Dalej </button>
     </div>
     <div v-else-if="steps.keysOwnClicked == true" class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
-          <button @click="resetData(); steps.type = false; steps.database = true; steps.keysOwnClicked = false" class="btn btn-primary"> Wróć </button>
+          <button @click="resetData(); steps.type = false; steps.database = true; steps.keysOwnClicked = false" class="btn btn-primary"> Cofnij </button>
       <button @click="steps.type = false; steps.keysOwn = true" class="btn btn-primary"> Dalej </button>
     </div>
     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
@@ -225,7 +225,7 @@
 
   <div v-else-if="steps.keysOwn" class="columns">
     <div class="column col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 navi">
-      <button @click="steps.database = true; steps.keysOwn = false" class="btn btn-primary"> Cofnij </button>
+      <button @click="steps.type = true; steps.keysOwn = false;" class="btn btn-primary"> Cofnij </button>
       <button v-if="isValidCollection == true && isValidDocument == true"
         @click="useOwnData(); steps.keysOwn = false; steps.customizeOwn = true" class="btn btn-primary">Dalej</button>
       <div style="cursor: pointer;" @click="checkIsValid()" v-else><button class="btn btn-primary disabled">Dalej</button>
@@ -244,7 +244,7 @@
         <div class="accordion-body">
           <ul>
             <li>
-              <input required="required" placeholder="Nazwa kolekcji" v-model="collectionName" type="text">
+              <input required="required" placeholder="Nazwa warstwy" v-model="collectionName" type="text">
               <button @click="collectionAdd()" class="btn btn-primary btn-sm">Dodaj warstwę</button>
             </li>
             <li v-for="(collectionData, index) in ownChartDataArray.collections" :key="index">
@@ -262,7 +262,7 @@
                       <input v-model.lazy="documentName" placeholder="nazwa" style="width:25%;"
                         type="text">
                       :
-                      <input v-model="documentValue" placeholder="wartość" style="width:25%;" type="text">
+                      <input v-model="documentValue" placeholder="wartość" style="width:25%;" type="number">
                       <button @click="documentAdd(index)" class="btn btn-primary btn-sm">Dodaj informację</button>
                     </li>
                   </ul>
@@ -462,30 +462,16 @@ export default {
         data: {
           labels: [],
           datasets: [{
-            label: '# of Votes',
+            label: [],
             data: [],
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-              'rgba(75, 192, 192, 0.2)',
-              'rgba(153, 102, 255, 0.2)',
-              'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(75, 192, 192, 1)',
-              'rgba(153, 102, 255, 1)',
-              'rgba(255, 159, 64, 1)'
-            ],
+            backgroundColor: [],
+            borderColor: [],
             borderWidth: 1
           }]
         },
         options: {
           scales: {
-            yAxes: [{
+            xAxes: [{
               ticks: {
                 beginAtZero: true
               }
@@ -554,37 +540,22 @@ export default {
       this.chart.data.labels.length = 0
       this.chart.data.datasets.length = 0
       for (let i = 0; i < this.ownChartDataArray.collections.length; i++) {
+        this.ownChartDataArray.collections[i].documents.sort((a, b) => (a.documentName > b.documentName) ? 1 : -1)
         for (let j = 0; j < this.ownChartDataArray.collections[i].documents.length; j++) {
-          if (this.chart.data.labels[j] === this.ownChartDataArray.collections[i].documents[j].documentName) {
-            console.log('Masno')
-          } else {
-            this.chart.data.labels.push(this.ownChartDataArray.collections[i].documents[j].documentName)
-          }
           data.push(this.ownChartDataArray.collections[i].documents[j].documentValue)
+          this.chart.data.labels.push(this.ownChartDataArray.collections[0].documents[j].documentName)
         }
+        this.chart.data.labels.splice(this.ownChartDataArray.collections[0].documents.length, 1000)
         slice = data.splice(0, this.ownChartDataArray.collections[i].documents.length)
         this.chart.data.datasets.push({
           label: this.ownChartDataArray.collections[i].collectionName,
           data: slice,
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)'
-          ],
-          borderColor: [
-            'rgba(255, 99, 132, 1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)'
-          ],
+          backgroundColor: [],
+          borderColor: [],
           borderWidth: 1
         })
         console.log(slice)
+        console.log(this.chart.data.labels)
       }
     },
     useData () {
@@ -657,7 +628,6 @@ export default {
       console.log(this.xhttpData)
     },
     generate () {
-      this.generateColor()
       console.log(this.chart)
       cs.addChart(this.chart)
       this.gtl().then((id) => {
@@ -681,11 +651,15 @@ export default {
         } else if (!a || isNaN(a)) {
           a = 1
         }
-        color.push('rgba(' + colorObj.r + ', ' + colorObj.g + ', ' + colorObj.b + ', ' + Math.decimal(a, 2) + ')')
+        if (this.chart.data.datasets.length === 1) {
+          color.push('rgba(' + colorObj.r + ', ' + colorObj.g + ', ' + colorObj.b + ', ' + a + ')')
+        } else {
+          color.push('rgba(' + colorObj.r + ', ' + colorObj.g + ', ' + colorObj.b + ', ' + colorObj.a + ')')
+        }
+        this.chart.data.datasets[this.activeInput].backgroundColor = color
+        this.chart.data.datasets[this.activeInput].borderColor = color
+        this.keyx++
       }
-      this.chart.data.datasets[this.activeInput].backgroundColor = color
-      this.chart.data.datasets[this.activeInput].borderColor = color
-      this.keyx++
     },
     randomData () {
       var arr = []

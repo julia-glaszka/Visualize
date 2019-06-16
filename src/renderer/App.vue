@@ -268,4 +268,12 @@ fill: #335CFF;
     }
   }
 }
+
+.navleft{
+  padding-left: 0 !important;
+}
+
+iframe{
+  border: 0 !important;
+}
 </style>
