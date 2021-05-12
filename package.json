@@ -57,7 +57,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "chart.js": "^2.8.0",
+    "chart.js": "^2.9.4",
     "data-forge": "^1.7.2",
     "idb": "^4.0.3",
     "normalize.css": "^8.0.1",
